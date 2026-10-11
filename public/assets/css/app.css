@@ -138,7 +138,11 @@ a:hover { color: var(--rc-cherry); }
   min-width: 44px; height: 44px; padding: 0 .55rem; border-radius: 999px; border: 0; background: transparent;
   color: var(--rc-ink); font-size: 1.25rem; transition: background-color .2s var(--rc-ease), color .2s var(--rc-ease);
 }
-.icon-link span { font-size: .88rem; font-weight: 600; }
+/* Bootstrap Icons nudge glyphs down 0.125em for inline text; in these flex buttons that
+   pushes the icon off-centre next to the label, so centre the glyph box itself. */
+.icon-link > i { display: block; line-height: 1; }
+.icon-link > i::before { display: block; vertical-align: 0; }
+.icon-link span { font-size: .88rem; font-weight: 600; line-height: 1; }
 .icon-link:hover, .icon-link[aria-expanded="true"] { background: var(--rc-cream); color: var(--rc-burgundy); }
 .icon-link .badge { position: absolute; top: 4px; right: 2px; font-size: .62rem; background: var(--rc-cherry); min-width: 18px; padding: .25em .45em; }
 .menu-toggle { margin-left: -.5rem; font-size: 1.6rem; }
