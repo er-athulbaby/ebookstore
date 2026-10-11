@@ -25,7 +25,9 @@ class BannerResource extends Resource
     {
         return $schema->components([
             FileUpload::make('image_path')->image()->disk('public')->directory('banners')->required(),
-            TextInput::make('title')->maxLength(150),
+            TextInput::make('title')->label('Headline')->maxLength(150),
+            TextInput::make('subtitle')->label('Supporting line')->maxLength(255),
+            TextInput::make('cta_label')->label('Button label')->maxLength(40)->placeholder('Shop now'),
             TextInput::make('link_url')->label('Link URL')->url()->helperText('Where the banner should take shoppers when clicked.'),
             TextInput::make('sort_order')->numeric()->default(0),
             Toggle::make('is_active')->default(true),
