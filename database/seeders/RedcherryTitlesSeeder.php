@@ -67,10 +67,15 @@ class RedcherryTitlesSeeder extends Seeder
                 'status' => 'published',
             ]);
 
-            $authorIds = collect($authorNames)->map(fn ($name) => Author::firstOrCreate(
-                ['slug' => Str::slug($name)],
-                ['name' => $name]
-            )->id);
+            $authorIds = collect($authorNames)->map(function ($name) {
+                $author = Author::firstOrCreate(['slug' => Str::slug($name)], ['name' => $name]);
+                // Portraits cropped from the back covers; never overwrite one set in /admin.
+                $photo = "authors/{$author->slug}.jpg";
+                if (! $author->photo_path && is_file(storage_path("app/public/{$photo}"))) {
+                    $author->update(['photo_path' => $photo]);
+                }
+                return $author->id;
+            });
             $book->authors()->sync($authorIds);
 
             $book->variants()->updateOrCreate(['type' => 'paperback'], [

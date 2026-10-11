@@ -157,7 +157,11 @@
             <div class="author-grid">
                 @foreach($authors as $author)
                     <a href="{{ route('catalog.author', $author) }}" class="author-tile">
-                        <span class="author-monogram" aria-hidden="true">{{ collect(explode(' ', $author->name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') }}</span>
+                        @if($author->photoUrl())
+                            <img src="{{ $author->photoUrl() }}" alt="" class="author-monogram" width="44" height="44" loading="lazy">
+                        @else
+                            <span class="author-monogram" aria-hidden="true">{{ collect(explode(' ', $author->name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') }}</span>
+                        @endif
                         <span class="author-meta">
                             <span class="author-name">{{ $author->name }}</span>
                             <span class="author-count">{{ $author->books_count }} {{ \Illuminate\Support\Str::plural('book', $author->books_count) }}</span>

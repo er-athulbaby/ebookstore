@@ -18,35 +18,28 @@ class CatalogController extends Controller
         $categoryIds = $childIds->push($category->id);
 
         $query = Book::published()->whereIn('category_id', $categoryIds);
-        $books = $this->applyFilters($request, $query)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
+        return $this->listing($request, $query, [
             'heading' => $category->name,
             'subheading' => $category->description,
-            'total' => $query->toBase()->getCountForPagination() ?? $books->total(),
+            'context' => 'category',
         ]);
     }
 
     public function author(Request $request, Author $author)
     {
         $query = Book::published()->whereHas('authors', fn (Builder $q) => $q->where('authors.id', $author->id));
-        $books = $this->applyFilters($request, $query)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
+        return $this->listing($request, $query, [
             'heading' => $author->name,
             'subheading' => 'Books by '.$author->name,
+            'context' => 'author',
+            'author' => $author,
         ]);
     }
 
     public function top100(Request $request)
     {
         $query = Book::published()->where('is_top100', true);
-        $books = $this->applyFilters($request, $query)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
+        return $this->listing($request, $query, [
             'heading' => 'RedCherry Top 100',
             'subheading' => 'The definitive reading list — books every shelf deserves',
         ]);
@@ -55,10 +48,7 @@ class CatalogController extends Controller
     public function bestsellers(Request $request)
     {
         $query = Book::published()->where('is_bestseller', true);
-        $books = $this->applyFilters($request, $query)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
+        return $this->listing($request, $query, [
             'heading' => 'Best Sellers',
             'subheading' => "Books our readers can't put down",
         ]);
@@ -67,13 +57,10 @@ class CatalogController extends Controller
     public function newReleases(Request $request)
     {
         $query = Book::published()->orderByDesc('published_at');
-        $books = $this->applyFilters($request, $query, defaultSort: false)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
+        return $this->listing($request, $query, [
             'heading' => 'New Releases',
             'subheading' => 'The freshest titles hot off the press',
-        ]);
+        ], defaultSort: false);
     }
 
     public function search(Request $request)
@@ -90,17 +77,43 @@ class CatalogController extends Controller
             });
         }
 
-        $books = $this->applyFilters($request, $query)->paginate(self::PER_PAGE)->withQueryString();
-
-        return view('catalog.index', [
-            'books' => $books,
-            'heading' => $term !== '' ? 'Search results for "'.$term.'"' : 'Search',
+        return $this->listing($request, $query, [
+            'heading' => $term !== '' ? 'Search results for "'.$term.'"' : 'All books',
             'subheading' => null,
+        ]);
+    }
+
+    private function listing(Request $request, Builder $query, array $data, bool $defaultSort = true)
+    {
+        $books = $this->applyFilters($request, $query, $defaultSort)->paginate(self::PER_PAGE)->withQueryString();
+
+        // Filter options only list values that actually have published books.
+        $published = fn (Builder $q) => $q->published();
+
+        return view('catalog.index', $data + [
+            'books' => $books,
+            'context' => null,
+            'filterCategories' => Category::whereHas('books', $published)
+                ->withCount(['books' => $published])->orderBy('sort_order')->orderBy('name')->get(),
+            'filterAuthors' => Author::whereHas('books', $published)
+                ->withCount(['books' => $published])->orderBy('name')->get(),
+            'filterLanguages' => Book::published()->distinct()->orderBy('language')->pluck('language'),
         ]);
     }
 
     private function applyFilters(Request $request, Builder $query, bool $defaultSort = true): Builder
     {
+        // Multi-select filters arrive as arrays (category[]=…); a single value still works.
+        $categories = array_filter((array) $request->query('category', []), 'is_string');
+        if ($categories) {
+            $query->whereHas('category', fn (Builder $c) => $c->whereIn('slug', $categories));
+        }
+
+        $authors = array_filter((array) $request->query('author', []), 'is_string');
+        if ($authors) {
+            $query->whereHas('authors', fn (Builder $a) => $a->whereIn('slug', $authors));
+        }
+
         if ($language = $request->query('language')) {
             $query->where('language', $language);
         }

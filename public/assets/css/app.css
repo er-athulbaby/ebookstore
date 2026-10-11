@@ -410,3 +410,26 @@ a:hover { color: var(--rc-cherry); }
 /* Add to Cart while the request is in flight (set by app.js). */
 .btn.is-loading { pointer-events: none; opacity: .75; }
 .btn.is-loading .spinner-border { width: .9rem; height: .9rem; border-width: .15em; vertical-align: -.1em; margin-right: .4rem; }
+
+/* ---------- Catalog filters ---------- */
+.filter-block { border: 0; border-bottom: 1px solid var(--rc-line); padding: 0 0 1rem; margin: 0 0 1rem; min-width: 0; }
+.filter-block legend { font-family: var(--rc-font-display); font-size: 1.15rem; font-weight: 600; color: var(--rc-ink); margin-bottom: .5rem; float: none; padding: 0; }
+.filter-check { display: flex; align-items: center; gap: .6rem; padding: .3rem 0; font-size: .92rem; cursor: pointer; color: var(--rc-ink-soft); }
+.filter-check:hover { color: var(--rc-burgundy); }
+.filter-check input { width: 1rem; height: 1rem; flex-shrink: 0; accent-color: var(--rc-burgundy); margin: 0; cursor: pointer; }
+.filter-check input:checked + span { color: var(--rc-burgundy); font-weight: 600; }
+.filter-count { margin-left: auto; font-size: .78rem; color: var(--rc-muted); background: var(--rc-cream); border-radius: 999px; padding: .05rem .5rem; font-variant-numeric: tabular-nums; }
+.filter-scroll { max-height: 260px; overflow-y: auto; padding-right: .35rem; scrollbar-width: thin; }
+.filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.filter-chip { display: inline-flex; align-items: center; gap: .2rem; padding: .3rem .4rem .3rem .75rem; border-radius: 999px; background: var(--rc-cream); border: 1px solid var(--rc-line); color: var(--rc-ink); font-size: .84rem; font-weight: 500; transition: border-color .2s var(--rc-ease), background-color .2s var(--rc-ease); }
+.filter-chip:hover { border-color: var(--rc-burgundy); background: #fbf1ef; color: var(--rc-burgundy); }
+.filter-clear { font-size: .84rem; font-weight: 600; margin-left: .25rem; }
+@media (min-width: 992px) { .filter-panel { position: sticky; top: 150px; } }
+
+/* ---------- Author photos ---------- */
+.author-header { display: flex; align-items: center; gap: 1.25rem; }
+.author-header-photo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: var(--rc-shadow); }
+.author-header .author-monogram { width: 96px; height: 96px; font-size: 1.8rem; }
+img.author-monogram { object-fit: cover; padding: 0; }
+.book-author-line { display: inline-flex; align-items: center; gap: .5rem; }
+.book-author-line img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }

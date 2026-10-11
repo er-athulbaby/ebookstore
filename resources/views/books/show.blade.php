@@ -26,7 +26,7 @@
             <h1 class="h3 mb-1">{{ $book->title }}</h1>
             <div class="text-muted mb-2">By
                 @foreach($book->authors as $author)
-                    <a href="{{ route('catalog.author', $author) }}">{{ $author->name }}</a>{{ !$loop->last ? ',' : '' }}
+                    <a href="{{ route('catalog.author', $author) }}" class="book-author-line">@if($author->photoUrl())<img src="{{ $author->photoUrl() }}" alt="" width="32" height="32">@endif{{ $author->name }}</a>{{ !$loop->last ? ',' : '' }}
                 @endforeach
             </div>
 
