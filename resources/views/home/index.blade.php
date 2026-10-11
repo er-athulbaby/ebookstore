@@ -4,6 +4,8 @@
 
 @section('content')
 @php
+    $categories = $categories->where('books_count', '>', 0); // hide empty shelves
+
     // Hero shelf: books with real cover art first, then the rest (presentation only).
     $heroBooks = $newReleases->concat($bestsellers)->concat($top100)->unique('id')
         ->sortByDesc(fn ($b) => $b->images->isNotEmpty())->take(5)->values();

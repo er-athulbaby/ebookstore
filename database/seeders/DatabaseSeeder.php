@@ -10,10 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminUserSeeder::class,
-            CatalogSeeder::class,
+            RedcherryTitlesSeeder::class, // real catalog; CatalogSeeder/BundleSeeder are the old demo data
             CouponSeeder::class,
             BannerSeeder::class,
-            BundleSeeder::class,
             GiftVoucherSeeder::class,
         ]);
     }

@@ -20,7 +20,9 @@
 </head>
 <body>
 @php
-    $navCategories = \App\Models\Category::whereNull('parent_id')->orderBy('sort_order')->get();
+    $navCategories = \App\Models\Category::whereNull('parent_id')
+        ->whereHas('books', fn ($q) => $q->published()) // don't link to empty shelves
+        ->orderBy('sort_order')->get();
 @endphp
 
 <a class="skip-link" href="#main">Skip to content</a>

@@ -49,7 +49,7 @@ class RedcherryTitlesSeeder extends Seeder
         ];
 
         foreach ($titles as [$slug, $title, $localTitle, $authorNames, $categoryName, $language, $priceRupees, $year, $isbn, $edition]) {
-            $category = Category::where('name', $categoryName)->firstOrFail();
+            $category = Category::firstOrCreate(['name' => $categoryName], ['slug' => Str::slug($categoryName)]);
 
             $description = $localTitle
                 ? "{$localTitle} — {$language} edition, published by RedCherry Books in {$year}."

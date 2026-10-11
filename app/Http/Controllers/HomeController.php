@@ -34,12 +34,13 @@ class HomeController extends Controller
             ->get();
 
         $categories = Category::whereNull('parent_id')
-            ->withCount('books')
+            ->withCount(['books' => fn ($q) => $q->published()])
             ->orderBy('sort_order')
             ->take(6)
             ->get();
 
-        $authors = Author::withCount('books')
+        $authors = Author::whereHas('books', fn ($q) => $q->published())
+            ->withCount(['books' => fn ($q) => $q->published()])
             ->orderByDesc('books_count')
             ->take(20)
             ->get();
