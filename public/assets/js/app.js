@@ -7,15 +7,33 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('form[data-ajax-cart]').forEach(function (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
+            var btn = form.querySelector('[type="submit"]');
+            if (btn && btn.classList.contains('is-loading')) return; // ignore double-clicks while in flight
             var formData = new FormData(form);
+            var original = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
+                btn.innerHTML = '<span class="spinner-border" aria-hidden="true"></span>Adding…';
+            }
+            function done() {
+                if (!btn) return;
+                btn.classList.remove('is-loading');
+                btn.removeAttribute('aria-busy');
+                btn.innerHTML = original;
+            }
 
             fetch(form.action, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                 body: formData,
             })
-                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('add to cart failed');
+                    return r.json();
+                })
                 .then(function (data) {
+                    done();
                     document.querySelectorAll('[data-cart-count]').forEach(function (el) {
                         el.textContent = data.cartItemCount;
                         el.hidden = data.cartItemCount === 0;
@@ -25,22 +43,33 @@ document.addEventListener('DOMContentLoaded', function () {
                         new bootstrap.Toast(toastEl).show();
                     }
                 })
-                .catch(function () { form.submit(); });
+                // A normal post shows the server's own message (e.g. out of stock).
+                .catch(function () { done(); form.submit(); });
         });
     });
 
-    // AJAX wishlist heart toggle.
+    // AJAX wishlist heart toggle — the icon fills in so the saved state is obvious.
     document.querySelectorAll('form[data-ajax-wishlist]').forEach(function (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
+            var btn = form.querySelector('.wishlist-btn');
+            if (btn && btn.getAttribute('aria-busy') === 'true') return;
+            if (btn) btn.setAttribute('aria-busy', 'true');
             fetch(form.action, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
             })
-                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('wishlist toggle failed');
+                    return r.json();
+                })
                 .then(function (data) {
-                    var btn = form.querySelector('.wishlist-btn');
-                    if (btn) btn.classList.toggle('active', data.added);
+                    if (!btn) return;
+                    btn.removeAttribute('aria-busy');
+                    btn.classList.toggle('active', data.added);
+                    btn.setAttribute('aria-pressed', data.added ? 'true' : 'false');
+                    var icon = btn.querySelector('i');
+                    if (icon) icon.className = data.added ? 'bi bi-heart-fill' : 'bi bi-heart';
                 })
                 .catch(function () { form.submit(); });
         });
