@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <rect width="400" height="600" fill="#f4c948"/>
+  <rect x="0" y="0" width="400" height="14" fill="#16171b"/>
+  <rect x="0" y="586" width="400" height="14" fill="#16171b"/>
+  <text x="40" y="220" font-family="Georgia, 'Times New Roman', serif" font-size="15" letter-spacing="6" fill="#16171b">FOCUS &#183; HABITS &#183; SYSTEMS</text>
+  <text x="36" y="300" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="66" fill="#16171b">Atomic</text>
+  <text x="36" y="372" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="66" fill="#16171b">Focus</text>
+  <rect x="36" y="400" width="150" height="8" fill="#16171b"/>
+  <text x="40" y="545" font-family="Georgia, serif" font-size="18" fill="#16171b" letter-spacing="1">Kavya Menon</text>
+</svg>

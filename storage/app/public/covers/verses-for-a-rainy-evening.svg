@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#efe0e6"/>
+      <stop offset="100%" stop-color="#d9c2cf"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" fill="url(#bg3)"/>
+  <g fill="#8a5c72" opacity="0.5">
+    <ellipse cx="70" cy="90" rx="3" ry="9"/>
+    <ellipse cx="330" cy="130" rx="3" ry="9"/>
+    <ellipse cx="110" cy="470" rx="3" ry="9"/>
+    <ellipse cx="300" cy="500" rx="3" ry="9"/>
+    <ellipse cx="50" cy="520" rx="2.5" ry="7"/>
+    <ellipse cx="350" cy="440" rx="2.5" ry="7"/>
+  </g>
+  <text x="200" y="270" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="38" fill="#5c1420">Verses</text>
+  <text x="200" y="320" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="2" fill="#8a5c72">for a</text>
+  <text x="200" y="380" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="38" fill="#5c1420">Rainy Evening</text>
+  <line x1="150" y1="410" x2="250" y2="410" stroke="#8a5c72" stroke-width="1"/>
+  <text x="200" y="540" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#5c1420" letter-spacing="1">Leela Krishnan</text>
+</svg>

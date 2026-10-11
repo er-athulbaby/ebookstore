@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 500" width="1600" height="500">
+  <rect width="1600" height="500" fill="#f4f1ee"/>
+  <g fill="#ed1c24" opacity="0.12">
+    <path d="M800 250c-40-80-115-115-183-97-11 63 23 132 86 166 23-86 57-46 97 0 40-46 74-86 97 0 63-34 97-103 86-166-68-18-143 17-183 97z" transform="scale(3.2) translate(50 -70)"/>
+  </g>
+  <text x="120" y="230" font-family="Segoe UI, sans-serif" font-size="56" font-weight="700" fill="#1a1a1a">Just In: New Releases</text>
+  <text x="120" y="285" font-family="Segoe UI, sans-serif" font-size="26" fill="#6b6b6b">Fresh paperbacks, hardcovers and eBooks every week.</text>
+</svg>

@@ -1,0 +1,31 @@
+<?php
+
+// Store-specific configuration for RedCherry Books.
+return [
+
+    'store_name' => env('STORE_NAME', 'RedCherry Books'),
+
+    'currency' => env('STORE_CURRENCY', 'INR'),
+    'currency_symbol' => env('STORE_CURRENCY_SYMBOL', '₹'),
+
+    // Orders at or above this subtotal ship free (physical items only).
+    'free_delivery_threshold' => (int) env('FREE_DELIVERY_THRESHOLD', 799),
+
+    // Flat shipping fee charged below the free-delivery threshold.
+    'flat_shipping_fee' => (int) env('FLAT_SHIPPING_FEE', 60),
+
+    'return_window_days' => (int) env('RETURN_WINDOW_DAYS', 7),
+
+    // How many times a customer may re-download a purchased ebook,
+    // and how long each generated signed link stays valid (minutes).
+    'ebook_download_limit' => (int) env('EBOOK_DOWNLOAD_LIMIT', 5),
+    'ebook_download_link_minutes' => (int) env('EBOOK_DOWNLOAD_LINK_MINUTES', 30),
+
+    // Preset denominations (₹) shown on the gift card purchase page.
+    'gift_card_denominations' => [250, 500, 1000, 2000],
+
+    'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
+    'support_email' => env('SUPPORT_EMAIL', 'support@redcherrybooks.example'),
+    'support_phone' => env('SUPPORT_PHONE', ''),
+
+];

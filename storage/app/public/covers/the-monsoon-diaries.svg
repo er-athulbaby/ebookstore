@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d3a4f"/>
+      <stop offset="60%" stop-color="#0a2836"/>
+      <stop offset="100%" stop-color="#061a22"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" fill="url(#bg)"/>
+  <g stroke="#e4b463" stroke-width="1.4" opacity="0.35">
+    <line x1="30" y1="0" x2="10" y2="600"/>
+    <line x1="90" y1="0" x2="65" y2="600"/>
+    <line x1="330" y1="0" x2="355" y2="600"/>
+    <line x1="380" y1="0" x2="400" y2="600"/>
+  </g>
+  <rect x="24" y="24" width="352" height="552" fill="none" stroke="#e4b463" stroke-width="1.5" opacity="0.55"/>
+  <text x="200" y="230" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="17" letter-spacing="4" fill="#b6842c">A MEMOIR</text>
+  <text x="200" y="290" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="#f8f1e6">The</text>
+  <text x="200" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="#f8f1e6">Monsoon</text>
+  <text x="200" y="390" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="#f8f1e6">Diaries</text>
+  <text x="200" y="540" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#e4b463" letter-spacing="1">Meera Nair</text>
+</svg>
