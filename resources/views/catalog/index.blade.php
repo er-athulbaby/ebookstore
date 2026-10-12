@@ -64,22 +64,25 @@
                     @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
                     @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
 
+                    {{-- Multi-select groups fold into dropdowns; they open by themselves while a value is ticked. --}}
                     @if(($context ?? null) !== 'category' && $filterCategories->isNotEmpty())
-                        <fieldset class="filter-block">
-                            <legend>Category</legend>
-                            @foreach($filterCategories as $cat)
-                                <label class="filter-check">
-                                    <input type="checkbox" name="category[]" value="{{ $cat->slug }}" @checked(in_array($cat->slug, $selCategories)) data-autosubmit>
-                                    <span>{{ $cat->name }}</span>
-                                    <span class="filter-count">{{ $cat->books_count }}</span>
-                                </label>
-                            @endforeach
-                        </fieldset>
+                        <details class="filter-block filter-drop" @if($selCategories) open @endif>
+                            <summary>Category @if($selCategories)<span class="filter-sel">{{ count($selCategories) }}</span>@endif</summary>
+                            <div class="filter-scroll">
+                                @foreach($filterCategories as $cat)
+                                    <label class="filter-check">
+                                        <input type="checkbox" name="category[]" value="{{ $cat->slug }}" @checked(in_array($cat->slug, $selCategories)) data-autosubmit>
+                                        <span>{{ $cat->name }}</span>
+                                        <span class="filter-count">{{ $cat->books_count }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </details>
                     @endif
 
                     @if(($context ?? null) !== 'author' && $filterAuthors->isNotEmpty())
-                        <fieldset class="filter-block">
-                            <legend>Author</legend>
+                        <details class="filter-block filter-drop" @if($selAuthors) open @endif>
+                            <summary>Author @if($selAuthors)<span class="filter-sel">{{ count($selAuthors) }}</span>@endif</summary>
                             <div class="filter-scroll">
                                 @foreach($filterAuthors as $a)
                                     <label class="filter-check">
@@ -89,48 +92,40 @@
                                     </label>
                                 @endforeach
                             </div>
-                        </fieldset>
+                        </details>
                     @endif
 
                     @if($filterLanguages->count() > 1)
-                        <fieldset class="filter-block">
-                            <legend>Language</legend>
-                            <label class="filter-check">
-                                <input type="radio" name="language" value="" @checked(!request('language')) data-autosubmit>
-                                <span>All languages</span>
-                            </label>
-                            @foreach($filterLanguages as $lang)
-                                <label class="filter-check">
-                                    <input type="radio" name="language" value="{{ $lang }}" @checked(request('language') === $lang) data-autosubmit>
-                                    <span>{{ $lang }}</span>
-                                </label>
-                            @endforeach
-                        </fieldset>
+                        <div class="filter-block">
+                            <label class="filter-label" for="filterLanguage">Language</label>
+                            <select name="language" id="filterLanguage" class="form-select form-select-sm" data-autosubmit>
+                                <option value="">All languages</option>
+                                @foreach($filterLanguages as $lang)
+                                    <option value="{{ $lang }}" @selected(request('language') === $lang)>{{ $lang }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     @endif
 
-                    <fieldset class="filter-block">
-                        <legend>Price</legend>
-                        <label class="filter-check">
-                            <input type="radio" name="price" value="" @checked(!isset($priceLabels[request('price')])) data-autosubmit>
-                            <span>Any price</span>
-                        </label>
-                        @foreach($priceLabels as $value => $label)
-                            <label class="filter-check">
-                                <input type="radio" name="price" value="{{ $value }}" @checked(request('price') === $value) data-autosubmit>
-                                <span>{{ $label }}</span>
-                            </label>
-                        @endforeach
-                    </fieldset>
+                    <div class="filter-block">
+                        <label class="filter-label" for="filterPrice">Price</label>
+                        <select name="price" id="filterPrice" class="form-select form-select-sm" data-autosubmit>
+                            <option value="">Any price</option>
+                            @foreach($priceLabels as $value => $label)
+                                <option value="{{ $value }}" @selected(request('price') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <fieldset class="filter-block">
-                        <legend>Format</legend>
-                        <select name="format" class="form-select form-select-sm" data-autosubmit aria-label="Format">
+                    <div class="filter-block">
+                        <label class="filter-label" for="filterFormat">Format</label>
+                        <select name="format" id="filterFormat" class="form-select form-select-sm" data-autosubmit>
                             <option value="">All formats</option>
                             @foreach($formatLabels as $value => $label)
                                 <option value="{{ $value }}" @selected(request('format') === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
-                    </fieldset>
+                    </div>
 
                     <noscript><button type="submit" class="btn btn-brand btn-sm w-100">Apply filters</button></noscript>
                 </form>

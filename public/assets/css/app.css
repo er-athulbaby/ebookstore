@@ -433,3 +433,13 @@ a:hover { color: var(--rc-cherry); }
 img.author-monogram { object-fit: cover; padding: 0; }
 .book-author-line { display: inline-flex; align-items: center; gap: .5rem; }
 .book-author-line img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
+/* Filter dropdowns (multi-select groups as <details>, single-choice as <select>) */
+.filter-label { display: block; font-family: var(--rc-font-display); font-size: 1.15rem; font-weight: 600; color: var(--rc-ink); margin-bottom: .5rem; }
+.filter-drop summary { display: flex; align-items: center; gap: .5rem; list-style: none; cursor: pointer; font-family: var(--rc-font-display); font-size: 1.15rem; font-weight: 600; color: var(--rc-ink); padding: .4rem .75rem; background: #fff; border: 1px solid var(--rc-line); border-radius: .5rem; }
+.filter-drop summary::-webkit-details-marker { display: none; }
+.filter-drop summary::after { content: ""; margin-left: auto; width: .55rem; height: .55rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-25%) rotate(45deg); transition: transform .2s var(--rc-ease); }
+.filter-drop[open] summary::after { transform: translateY(25%) rotate(-135deg); }
+.filter-drop summary:hover, .filter-drop summary:focus-visible { border-color: var(--rc-burgundy); }
+.filter-drop .filter-scroll { margin-top: .5rem; padding: .25rem .5rem; }
+.filter-sel { font-family: var(--rc-font-body); font-size: .75rem; font-weight: 700; color: #fff; background: var(--rc-burgundy); border-radius: 999px; padding: .05rem .45rem; }
