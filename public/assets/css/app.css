@@ -235,7 +235,8 @@ a:hover { color: var(--rc-cherry); }
 .hero-book-3 { translate: 22% 4%; rotate: 7deg; scale: .86; z-index: 4; }
 .hero-book-4 { translate: -164% 10%; rotate: -13deg; scale: .72; z-index: 3; }
 .hero-book-5 { translate: 64% 10%; rotate: 13deg; scale: .72; z-index: 3; }
-.hero-book:hover { transform: translateY(-10px); box-shadow: 0 24px 40px -12px rgba(60, 25, 20, .45); z-index: 6; }
+.hero-book:hover, .hero-book.is-raised { transform: translateY(-10px); box-shadow: 0 24px 40px -12px rgba(60, 25, 20, .45); z-index: 6; }
+.hero-book.is-raised { z-index: 7; }
 @media (max-width: 991.98px) { .hero-grid { gap: 1rem; } .hero-shelf { height: clamp(250px, 52vw, 380px); } }
 @media (max-width: 575.98px) {
   .hero-book { width: 31vw; bottom: 2%; }

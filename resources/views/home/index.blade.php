@@ -208,6 +208,18 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
 (function () {
+    // Touch screens have no hover, so the first tap on a tucked-away cover brings it to the front; the next tap opens it.
+    if (!matchMedia('(hover: none)').matches) return;
+    var books = document.querySelectorAll('[data-hero-book]');
+    books.forEach(function (book) {
+        book.addEventListener('click', function (e) {
+            if (book.classList.contains('is-raised') || book.classList.contains('hero-book-1') && !document.querySelector('.hero-book.is-raised')) return;
+            e.preventDefault();
+            books.forEach(function (b) { b.classList.toggle('is-raised', b === book); });
+        });
+    });
+})();
+(function () {
     // One orchestrated moment: the cover fan settles in on load. Nothing else animates on its own.
     if (typeof gsap === 'undefined' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var books = gsap.utils.toArray('[data-hero-book]');
