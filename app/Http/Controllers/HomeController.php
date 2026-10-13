@@ -18,19 +18,19 @@ class HomeController extends Controller
         $newReleases = Book::published()
             ->with($eagerLoad)->withCount('approvedReviews')->withAvg('approvedReviews', 'rating')
             ->orderByDesc('published_at')
-            ->take(6)
+            ->take(8)
             ->get();
 
         $bestsellers = Book::published()
             ->where('is_bestseller', true)
             ->with($eagerLoad)->withCount('approvedReviews')->withAvg('approvedReviews', 'rating')
-            ->take(6)
+            ->take(8)
             ->get();
 
         $top100 = Book::published()
             ->where('is_top100', true)
             ->with($eagerLoad)->withCount('approvedReviews')->withAvg('approvedReviews', 'rating')
-            ->take(6)
+            ->take(8)
             ->get();
 
         $heroBooks = Book::published()->where('is_featured', true)
