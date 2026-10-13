@@ -198,9 +198,11 @@ a:hover { color: var(--rc-cherry); }
 }
 
 /* ---------- Section scaffolding ---------- */
-.home-section { padding-block: clamp(3rem, 6vw, 4.75rem); }
+.home-section { padding-block: clamp(2rem, 4vw, 3rem); }
+/* Two plain sections in a row shouldn't stack both paddings into one big gap */
+.home-section:not(.section-tinted):not(.top100-band) + .home-section:not(.section-tinted):not(.top100-band) { padding-top: 0; }
 .section-tinted { background: var(--rc-cream); }
-.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem 2rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem 2rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
 .section-eyebrow, .eyebrow {
   display: block; color: var(--rc-burgundy); font-family: var(--rc-font-display); font-style: italic;
   font-size: 1.05rem; font-weight: 500;
@@ -217,7 +219,7 @@ a:hover { color: var(--rc-cherry); }
     var(--rc-ivory);
   border-bottom: 1px solid var(--rc-line);
 }
-.hero-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; padding-block: clamp(2.75rem, 6vw, 5rem); }
+.hero-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; padding-block: clamp(2rem, 5vw, 4rem); }
 @media (min-width: 992px) { .hero-grid { grid-template-columns: 1.05fr 1fr; gap: 3rem; } }
 .hero-title { font-size: clamp(2.6rem, 5.4vw, 4.6rem); font-weight: 600; line-height: 1.02; letter-spacing: -.015em; margin: 1rem 0 0; max-width: 13ch; }
 .hero-title em { font-style: italic; color: var(--rc-burgundy); }
@@ -362,7 +364,7 @@ a:hover { color: var(--rc-cherry); }
 
 /* ---------- Stats ---------- */
 .stats-strip { background: var(--rc-ivory); border-top: 1px solid var(--rc-line); }
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; padding-block: 3rem; text-align: center; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; padding-block: 2.25rem; text-align: center; }
 @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } .stats-grid > div + div { border-left: 1px solid var(--rc-line); } }
 .stats-strip .stat-num { font-size: clamp(2.4rem, 4.5vw, 3.2rem); font-weight: 600; color: var(--rc-burgundy); line-height: 1; }
 .stats-strip .stat-label { font-size: .85rem; color: var(--rc-muted); margin-top: .55rem; font-weight: 500; }
