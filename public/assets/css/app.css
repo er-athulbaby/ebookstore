@@ -104,6 +104,8 @@ a:hover { color: var(--rc-cherry); }
 .btn-brand:hover, .btn-brand:focus-visible { background: var(--rc-burgundy-dark); border-color: var(--rc-burgundy-dark); color: #fff; box-shadow: 0 8px 18px -10px rgba(107, 20, 32, .7); }
 .btn-outline-brand { border: 1px solid var(--rc-burgundy); color: var(--rc-burgundy); background: transparent; }
 .btn-outline-brand:hover, .btn-outline-brand:focus-visible { background: var(--rc-burgundy); border-color: var(--rc-burgundy); color: #fff; }
+.btn-check:checked + .btn-outline-brand { background: var(--rc-burgundy); border-color: var(--rc-burgundy); color: #fff; }
+.btn-check:focus-visible + .btn-outline-brand { outline: 2px solid var(--rc-burgundy); outline-offset: 2px; }
 .btn-outline-secondary { border-color: var(--rc-line); color: var(--rc-ink); }
 .btn-outline-secondary:hover { background: var(--rc-cream); border-color: var(--rc-beige); color: var(--rc-ink); }
 .text-brand { color: var(--rc-cherry) !important; }
