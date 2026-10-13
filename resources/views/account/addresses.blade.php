@@ -40,9 +40,10 @@
                         <div class="col-12"><input name="phone" class="form-control form-control-sm" placeholder="Phone *" required></div>
                         <div class="col-12"><input name="line1" class="form-control form-control-sm" placeholder="Address Line 1 *" required></div>
                         <div class="col-12"><input name="line2" class="form-control form-control-sm" placeholder="Address Line 2"></div>
-                        <div class="col-4"><input name="city" class="form-control form-control-sm" placeholder="City *" required></div>
-                        <div class="col-4"><input name="state" class="form-control form-control-sm" placeholder="State *" required></div>
-                        <div class="col-4"><input name="postal_code" class="form-control form-control-sm" placeholder="PIN *" required></div>
+                        <div class="col-4"><input name="postal_code" id="pinInput" class="form-control form-control-sm" placeholder="PIN *" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="postal-code" aria-describedby="pinHint"></div>
+                        <div class="col-4"><input name="city" id="cityInput" class="form-control form-control-sm" placeholder="City *" required></div>
+                        <div class="col-4"><input name="state" id="stateInput" class="form-control form-control-sm" placeholder="State *" required></div>
+                        <div class="col-12 small text-muted" id="pinHint" aria-live="polite">Enter the PIN and we'll fill in the city and state.</div>
                         <div class="col-12 form-check mt-2">
                             <input type="checkbox" name="is_default" value="1" class="form-check-input" id="isDefault">
                             <label class="form-check-label small" for="isDefault">Set as default address</label>
@@ -55,3 +56,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    // Free India Post lookup (CORS-enabled); if it fails, the fields simply stay editable by hand.
+    var pin = document.getElementById('pinInput'), city = document.getElementById('cityInput'),
+        state = document.getElementById('stateInput'), hint = document.getElementById('pinHint');
+    if (!pin) return;
+    pin.addEventListener('input', function () {
+        var code = pin.value.replace(/\D/g, '').slice(0, 6);
+        if (code !== pin.value) pin.value = code;
+        if (code.length !== 6) return;
+        hint.textContent = 'Looking up PIN…';
+        fetch('https://api.postalpincode.in/pincode/' + code)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (pin.value !== code) return; // user kept typing
+                var office = data && data[0] && data[0].Status === 'Success' && data[0].PostOffice[0];
+                if (!office) { hint.textContent = 'PIN not found — please type the city and state.'; return; }
+                city.value = office.District;
+                state.value = office.State;
+                hint.textContent = 'Filled in from PIN ' + code + '. You can edit them if needed.';
+            })
+            .catch(function () { hint.textContent = "Couldn't look up the PIN — please type the city and state."; });
+    });
+})();
+</script>
+@endpush
