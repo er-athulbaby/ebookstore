@@ -380,7 +380,7 @@ a:hover { color: var(--rc-cherry); }
 .trust-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; padding-block: 2.25rem; }
 @media (min-width: 992px) { .trust-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .trust-item { display: flex; align-items: flex-start; gap: .85rem; }
-.trust-icon { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--rc-white); color: var(--rc-cherry); display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: var(--rc-shadow-sm); }
+.trust-icon { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--rc-white); color: var(--rc-burgundy); display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: var(--rc-shadow-sm); }
 .trust-item div b { display: block; font-weight: 700; font-size: .92rem; }
 .trust-item div span { display: block; font-size: .83rem; color: var(--rc-muted); overflow-wrap: anywhere; }
 
