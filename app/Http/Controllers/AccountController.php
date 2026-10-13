@@ -99,16 +99,11 @@ class AccountController extends Controller
     {
         $data = $request->validate(['code' => ['required', 'string']]);
 
-        $voucher = GiftVoucher::whereRaw('lower(code) = ?', [strtolower($data['code'])])->first();
+        $voucher = GiftVoucher::redeemFor($data['code'], Auth::user());
 
-        if (! $voucher || ! $voucher->isValid()) {
+        if (! $voucher) {
             return back()->withErrors(['code' => 'That gift code is invalid, expired, or already used.']);
         }
-
-        DB::transaction(function () use ($voucher) {
-            Auth::user()->increment('wallet_balance', $voucher->value);
-            $voucher->update(['is_redeemed' => true, 'redeemed_by_user_id' => Auth::id()]);
-        });
 
         return back()->with('status', money($voucher->value).' added to your wallet.');
     }

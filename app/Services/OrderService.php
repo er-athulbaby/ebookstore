@@ -10,6 +10,8 @@ use App\Models\Order;
 use App\Models\User;
 use App\Notifications\GiftVoucherIssued;
 use App\Notifications\OrderConfirmed;
+use App\Support\Shipping;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
@@ -20,7 +22,11 @@ class OrderService
      * here — only once payment is confirmed (markPaid) — so an abandoned
      * checkout never locks up inventory.
      */
-    public function createFromCart(Cart $cart, User $user, ?int $shippingAddressId, string $paymentMethod, ?Coupon $coupon): Order
+    /**
+     * $useWallet: apply the customer's wallet balance (gift card credit) first; $paymentMethod
+     * then only covers what is left. If nothing is left to pay, the order is 'free' to place.
+     */
+    public function createFromCart(Cart $cart, User $user, ?int $shippingAddressId, ?string $paymentMethod, ?Coupon $coupon, bool $useWallet = false): Order
     {
         $cart->loadMissing('items.variant.book', 'items.bundle.variants');
 
@@ -35,19 +41,23 @@ class OrderService
         $hasDigital = $cart->hasDigitalItems();
         $hasGiftCard = $cart->hasGiftCardItems();
 
-        abort_if($paymentMethod === 'cod' && ($hasGiftCard || ($hasDigital && ! config('redcherry.cod_for_ebooks'))), 422,
-            'Cash on Delivery isn\'t available for eBooks or gift card purchases — these are delivered instantly and require online payment or wallet.');
         abort_if($hasPhysical && ! $shippingAddressId, 422, 'A shipping address is required for physical items.');
 
         $subtotal = $cart->subtotal();
         $discount = $coupon ? min($coupon->discountFor($subtotal), $subtotal) : 0;
-        $shipping = $this->shippingFor($subtotal - $discount, $hasPhysical);
+        $shipping = Shipping::for($subtotal - $discount, $hasPhysical);
         $total = max(0, $subtotal - $discount) + $shipping;
+        $walletAmount = $useWallet ? min($user->wallet_balance, $total) : 0;
 
-        abort_if($paymentMethod === 'wallet' && $user->wallet_balance < $total, 422,
-            'Your wallet balance isn\'t enough to cover this order.');
+        if ($total - $walletAmount === 0) {
+            $paymentMethod = 'free';
+        } else {
+            abort_unless(in_array($paymentMethod, ['razorpay', 'cod'], true), 422, 'Please choose a payment method.');
+        }
+        abort_if($paymentMethod === 'cod' && ($hasGiftCard || ($hasDigital && ! config('redcherry.cod_for_ebooks'))), 422,
+            'Cash on Delivery isn\'t available for eBooks or gift card purchases — these are delivered instantly and require online payment or wallet.');
 
-        return DB::transaction(function () use ($cart, $user, $shippingAddressId, $paymentMethod, $coupon, $subtotal, $discount, $shipping, $total, $hasPhysical, $hasDigital, $hasGiftCard) {
+        return DB::transaction(function () use ($cart, $user, $shippingAddressId, $paymentMethod, $coupon, $subtotal, $discount, $shipping, $total, $walletAmount, $hasPhysical, $hasDigital, $hasGiftCard) {
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => $user->id,
@@ -55,6 +65,7 @@ class OrderService
                 'fulfillment_type' => $hasPhysical && ($hasDigital || $hasGiftCard) ? 'mixed' : (($hasDigital || $hasGiftCard) ? 'digital' : 'physical'),
                 'subtotal' => $subtotal,
                 'discount_amount' => $discount,
+                'voucher_amount' => $walletAmount, // paid from wallet; the rest is amountDue()
                 'shipping_amount' => $shipping,
                 'total' => $total,
                 'coupon_id' => $coupon?->id,
@@ -74,6 +85,8 @@ class OrderService
                     for ($i = 0; $i < $item->quantity; $i++) {
                         $order->items()->create([
                             'gift_card_value' => $item->gift_card_value,
+                            'gift_card_design_id' => $item->gift_card_design_id,
+                            'gift_card_meta' => $item->gift_card_meta,
                             'book_title' => $item->displayTitle(),
                             'variant_type' => 'gift_card',
                             'unit_price' => $item->gift_card_value,
@@ -127,6 +140,8 @@ class OrderService
                 return;
             }
 
+            $this->chargeWallet($order, strict: false);
+
             $order->update([
                 'status' => $order->fulfillment_type === 'digital' ? 'delivered' : 'paid',
                 'payment_status' => 'paid',
@@ -137,10 +152,7 @@ class OrderService
         });
 
         $order->user->notify(new OrderConfirmed($order));
-
-        foreach ($issuedVouchers as $voucher) {
-            $order->user->notify(new GiftVoucherIssued($voucher));
-        }
+        $this->sendVouchers($order, $issuedVouchers);
     }
 
     /**
@@ -148,41 +160,60 @@ class OrderService
      * delivery), but placing one is still a firm commitment — so stock and
      * one-time coupon usage must be committed right away here, not left
      * waiting on a "paid" event that will never come for this order.
-     * (COD carts can never contain a gift card purchase, so no voucher
-     * issuance path is needed here.)
+     * Any wallet part is taken now too.
      */
     public function commitCodOrder(Order $order): void
     {
-        DB::transaction(function () use ($order) {
-            $this->fulfillItems($order);
+        $issuedVouchers = DB::transaction(function () use ($order) {
+            $this->chargeWallet($order, strict: true);
+            $vouchers = $this->fulfillItems($order);
             $this->redeemPromotions($order);
+
+            return $vouchers;
         });
+        $this->sendVouchers($order, $issuedVouchers);
+    }
+
+    /** Nothing left to pay (coupon and/or wallet cover it all): confirm straight away, no gateway. */
+    public function placeWithoutGateway(Order $order): void
+    {
+        DB::transaction(fn () => $this->chargeWallet($order, strict: true));
+        $this->markPaid($order);
     }
 
     /**
-     * Debits the wallet and records the payment atomically — if the payment
-     * row fails to write for any reason, the debit must roll back with it,
-     * not leave the customer's balance gone with no order to show for it.
-     * Row-locked and re-validated here (not just trusted from the earlier
-     * createFromCart check) so two simultaneous wallet checkouts can't both
-     * succeed past the same balance.
+     * Takes the order's wallet part (voucher_amount) from the customer's balance, once:
+     * the captured 'wallet' payment row is the marker. Row-locked so two checkouts can't
+     * spend the same balance. strict: refuse if the balance has since dropped (before
+     * placing). Not strict (gateway already captured the rest): take what is there.
      */
-    public function payFromWallet(Order $order, User $user): void
+    private function chargeWallet(Order $order, bool $strict): void
     {
-        DB::transaction(function () use ($order, $user) {
-            $locked = User::whereKey($user->id)->lockForUpdate()->first();
-            abort_if($locked->wallet_balance < $order->total, 422, 'Your wallet balance isn\'t enough to cover this order.');
-            $locked->decrement('wallet_balance', $order->total);
+        if ($order->voucher_amount <= 0 || $order->payments()->where('provider', 'wallet')->where('status', 'captured')->exists()) {
+            return;
+        }
 
-            $order->payments()->create([
-                'provider' => 'wallet',
-                'amount' => $order->total,
-                'currency' => 'INR',
-                'status' => 'captured',
-            ]);
-        });
+        $user = User::whereKey($order->user_id)->lockForUpdate()->first();
+        abort_if($strict && $user->wallet_balance < $order->voucher_amount, 422, 'Your wallet balance has changed — please review your order.');
+        // shortcut: in the rare non-strict shortfall the store absorbs the gap; it is logged for follow-up.
+        $amount = min($user->wallet_balance, $order->voucher_amount);
+        if ($amount < $order->voucher_amount) {
+            logger()->warning('Wallet shortfall on order '.$order->order_number, ['due' => $order->voucher_amount, 'taken' => $amount]);
+        }
+        $user->decrement('wallet_balance', $amount);
 
-        $this->markPaid($order);
+        $order->payments()->create(['provider' => 'wallet', 'amount' => $amount, 'currency' => 'INR', 'status' => 'captured']);
+    }
+
+    /** Email each new gift card to its recipient, with a copy to the buyer (or just the buyer if no recipient). */
+    private function sendVouchers(Order $order, array $vouchers): void
+    {
+        foreach ($vouchers as $voucher) {
+            if ($voucher->recipient_email) {
+                Notification::route('mail', $voucher->recipient_email)->notify(new GiftVoucherIssued($voucher));
+            }
+            $order->user->notify(new GiftVoucherIssued($voucher, buyerCopy: (bool) $voucher->recipient_email));
+        }
     }
 
     public function markFailed(Order $order): void
@@ -199,9 +230,17 @@ class OrderService
 
         foreach ($order->items()->with('variant', 'bundle.variants')->get() as $item) {
             if ($item->isGiftCard()) {
+                $meta = $item->gift_card_meta ?? [];
                 $voucher = GiftVoucher::create([
                     'code' => GiftVoucher::generateCode(),
                     'value' => $item->gift_card_value,
+                    'gift_card_design_id' => $item->gift_card_design_id,
+                    'purchased_by_user_id' => $order->user_id,
+                    'recipient_name' => $meta['recipient_name'] ?? null,
+                    'recipient_email' => $meta['recipient_email'] ?? null,
+                    'sender_name' => $meta['sender_name'] ?? null,
+                    'message' => $meta['message'] ?? null,
+                    'expires_at' => now()->addYear(),
                 ]);
                 $item->update(['gift_voucher_id' => $voucher->id]);
                 $issuedVouchers[] = $voucher;
@@ -253,17 +292,5 @@ class OrderService
         if ($order->coupon_id) {
             $order->coupon()->increment('used_count');
         }
-    }
-
-    private function shippingFor(int $netAmount, bool $hasPhysical): int
-    {
-        if (! $hasPhysical) {
-            return 0;
-        }
-
-        $thresholdPaise = Config::get('redcherry.free_delivery_threshold', 799) * 100;
-        $feePaise = Config::get('redcherry.flat_shipping_fee', 60) * 100;
-
-        return $netAmount >= $thresholdPaise ? 0 : $feePaise;
     }
 }

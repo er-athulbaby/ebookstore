@@ -39,6 +39,7 @@ class GiftVoucherResource extends Resource
                 ->formatStateUsing(fn ($state) => $state ? $state / 100 : null)
                 ->dehydrateStateUsing(fn ($state) => (int) round(((float) $state) * 100)),
             TextInput::make('recipient_name')->label('Recipient name'),
+            TextInput::make('sender_name')->label('From (sender name)'),
             TextInput::make('recipient_email')->label('Recipient email')->email()
                 ->helperText('If set, the voucher code is emailed to this address on save.'),
             Textarea::make('message')->label('Gift message')->columnSpanFull(),
@@ -57,7 +58,8 @@ class GiftVoucherResource extends Resource
             ->columns([
                 TextColumn::make('code')->searchable()->copyable(),
                 TextColumn::make('value')->label('Value')->formatStateUsing(fn ($state) => money($state)),
-                TextColumn::make('recipient_email')->label('Recipient'),
+                TextColumn::make('recipient_email')->label('Recipient')->placeholder('Buyer'),
+                TextColumn::make('purchasedBy.name')->label('Bought by')->placeholder('Admin'),
                 IconColumn::make('is_redeemed')->boolean()->label('Redeemed'),
                 TextColumn::make('redeemedBy.name')->label('Redeemed by')->placeholder('—'),
                 TextColumn::make('expires_at')->dateTime('d M Y')->placeholder('Never'),

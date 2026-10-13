@@ -35,6 +35,10 @@
                 @endif
                 <div class="d-flex justify-content-between small"><span>Shipping</span><span>{{ $order->shipping_amount > 0 ? money($order->shipping_amount) : 'Free' }}</span></div>
                 <div class="d-flex justify-content-between fw-bold pt-1"><span>Total</span><span>{{ money($order->total) }}</span></div>
+                @if($order->voucher_amount > 0)
+                    <div class="d-flex justify-content-between small text-success"><span>Paid from wallet</span><span>-{{ money($order->voucher_amount) }}</span></div>
+                    <div class="d-flex justify-content-between small fw-semibold"><span>{{ $order->payment_method === 'cod' ? 'To pay on delivery' : 'Paid by '.($order->payment_method === 'free' ? 'wallet' : 'card / UPI') }}</span><span>{{ money($order->amountDue()) }}</span></div>
+                @endif
             </div>
 
             @if($order->shippingAddress)

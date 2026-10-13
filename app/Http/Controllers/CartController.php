@@ -77,23 +77,37 @@ class CartController extends Controller
     public function addGiftCard(Request $request)
     {
         $data = $request->validate([
-            'amount' => ['required', 'integer', Rule::in(config('redcherry.gift_card_denominations'))],
-            'quantity' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'design_id' => ['nullable', Rule::exists('gift_card_designs', 'id')->where('is_active', true)],
+            'amount' => ['required_without:design_id', 'nullable', 'integer',
+                'min:'.config('redcherry.gift_card_custom_min'), 'max:'.config('redcherry.gift_card_custom_max')],
+            'recipient_name' => ['nullable', 'string', 'max:100'],
+            'recipient_email' => ['nullable', 'email', 'max:150'],
+            'sender_name' => ['nullable', 'string', 'max:100'],
+            'message' => ['nullable', 'string', 'max:300'],
         ]);
 
-        $valuePaise = $data['amount'] * 100;
-        $quantity = $data['quantity'] ?? 1;
+        // A design fixes the value; otherwise it's the custom amount (in ₹).
+        $design = isset($data['design_id']) ? \App\Models\GiftCardDesign::find($data['design_id']) : null;
+        $valuePaise = $design ? $design->value : $data['amount'] * 100;
 
         $cart = $this->cartService->current();
-        $item = $cart->items()->firstOrNew(['gift_card_value' => $valuePaise]);
-        $item->quantity = $item->exists ? $item->quantity + $quantity : $quantity;
-        $item->save();
+        $cart->items()->create([
+            'gift_card_value' => $valuePaise,
+            'gift_card_design_id' => $design?->id,
+            'gift_card_meta' => array_filter([
+                'recipient_name' => $data['recipient_name'] ?? null,
+                'recipient_email' => $data['recipient_email'] ?? null,
+                'sender_name' => $data['sender_name'] ?? null,
+                'message' => $data['message'] ?? null,
+            ]) ?: null,
+            'quantity' => 1,
+        ]);
 
         if ($request->wantsJson()) {
             return response()->json(['message' => 'Added to cart', 'cartItemCount' => $this->cartService->itemCount()]);
         }
 
-        return back()->with('status', 'Added a '.money($valuePaise).' gift card to your cart.');
+        return redirect()->route('cart.index')->with('status', 'Gift card added to your cart.');
     }
 
     public function update(Request $request, \App\Models\CartItem $cartItem)

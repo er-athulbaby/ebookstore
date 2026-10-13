@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use App\Models\GiftVoucher;
+use App\Support\Shipping;
 use App\Services\CartService;
 use App\Services\OrderService;
 use App\Services\RazorpayService;
@@ -25,8 +27,11 @@ class CheckoutController extends Controller
         abort_if($cart->items->isEmpty(), 422, 'Your cart is empty.');
 
         $coupon = $this->appliedCoupon();
-        $discount = $coupon ? $coupon->discountFor($cart->subtotal()) : 0;
-        $total = max(0, $cart->subtotal() - $discount);
+        $discount = $coupon ? min($coupon->discountFor($cart->subtotal()), $cart->subtotal()) : 0;
+        $net = $cart->subtotal() - $discount;
+        // Same numbers OrderService will charge, so what the customer sees is what they pay.
+        $shipping = Shipping::for($net, $cart->hasPhysicalItems());
+        $total = $net + $shipping;
         $hasGiftCard = $cart->hasGiftCardItems();
 
         return view('checkout.index', [
@@ -34,10 +39,11 @@ class CheckoutController extends Controller
             'addresses' => Auth::user()->addresses,
             'coupon' => $coupon,
             'discount' => $discount,
+            'shipping' => $shipping,
+            'total' => $total,
             'requiresAddress' => $cart->hasPhysicalItems(),
             'allowCod' => (config('redcherry.cod_for_ebooks') || ! $cart->hasDigitalItems()) && ! $hasGiftCard,
             'walletBalance' => Auth::user()->wallet_balance,
-            'allowWallet' => Auth::user()->wallet_balance >= $total,
         ]);
     }
 
@@ -48,7 +54,8 @@ class CheckoutController extends Controller
 
         $data = $request->validate([
             'shipping_address_id' => [\Illuminate\Validation\Rule::requiredIf($cart->hasPhysicalItems()), 'nullable', 'exists:addresses,id'],
-            'payment_method' => ['required', 'in:razorpay,cod,wallet'],
+            'payment_method' => ['nullable', 'in:razorpay,cod'], // not needed when nothing is left to pay
+            'use_wallet' => ['nullable', 'boolean'],
         ], [
             'shipping_address_id.required' => 'Please add a shipping address before placing the order.',
         ]);
@@ -73,15 +80,24 @@ class CheckoutController extends Controller
             $cart,
             Auth::user(),
             $data['shipping_address_id'] ?? null,
-            $data['payment_method'],
+            $data['payment_method'] ?? null,
             $coupon,
+            (bool) ($data['use_wallet'] ?? false),
         );
 
-        if ($data['payment_method'] === 'cod') {
+        if ($order->payment_method === 'free') {
+            $this->orderService->placeWithoutGateway($order);
+            $this->clearCartAndPromotions($cart);
+
+            return redirect()->route('order.confirmation', $order->order_number)
+                ->with('status', $order->voucher_amount > 0 ? 'Order placed! Paid from your wallet.' : 'Order placed!');
+        }
+
+        if ($order->payment_method === 'cod') {
             $order->update(['status' => 'processing']);
             $order->payments()->create([
                 'provider' => 'cod',
-                'amount' => $order->total,
+                'amount' => $order->amountDue(),
                 'currency' => 'INR',
                 'status' => 'created',
             ]);
@@ -90,14 +106,6 @@ class CheckoutController extends Controller
 
             return redirect()->route('order.confirmation', $order->order_number)
                 ->with('status', 'Order placed! Pay cash on delivery.');
-        }
-
-        if ($data['payment_method'] === 'wallet') {
-            $this->orderService->payFromWallet($order, Auth::user());
-            $this->clearCartAndPromotions($cart);
-
-            return redirect()->route('order.confirmation', $order->order_number)
-                ->with('status', 'Order placed! Paid from your wallet.');
         }
 
         $payment = $razorpay->createOrderFor($order);
@@ -137,6 +145,19 @@ class CheckoutController extends Controller
         $this->clearCartAndPromotions($this->cartService->current());
 
         return response()->json(['redirect' => route('order.confirmation', $order->order_number)]);
+    }
+
+    /** "Have a gift card?" at checkout: the code goes into the wallet, which checkout then uses. */
+    public function redeemGiftCard(Request $request)
+    {
+        $data = $request->validate(['gift_code' => ['required', 'string', 'max:30']]);
+        $voucher = GiftVoucher::redeemFor($data['gift_code'], Auth::user());
+
+        if (! $voucher) {
+            return back()->withErrors(['gift_code' => 'That gift card code is invalid, expired, or already used.'])->withInput();
+        }
+
+        return back()->with('status', money($voucher->value).' added to your wallet — it will be used for this order.');
     }
 
     private function appliedCoupon(): ?Coupon

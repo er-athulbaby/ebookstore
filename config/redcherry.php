@@ -21,8 +21,9 @@ return [
     'ebook_download_limit' => (int) env('EBOOK_DOWNLOAD_LIMIT', 5),
     'ebook_download_link_minutes' => (int) env('EBOOK_DOWNLOAD_LINK_MINUTES', 30),
 
-    // Preset denominations (₹) shown on the gift card purchase page.
-    'gift_card_denominations' => [250, 500, 1000, 2000],
+    // Range (₹) for the "Custom amount" gift card; fixed-value designs are managed in admin.
+    'gift_card_custom_min' => 100,
+    'gift_card_custom_max' => 10000,
 
     // Testing only: lets eBook orders use Cash on Delivery (the eBook is unlocked without payment).
     'cod_for_ebooks' => env('COD_FOR_EBOOKS', false),

@@ -10,7 +10,14 @@ class CartItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['cart_id', 'book_variant_id', 'bundle_id', 'gift_card_value', 'quantity'];
+    protected $fillable = ['cart_id', 'book_variant_id', 'bundle_id', 'gift_card_value', 'gift_card_design_id', 'gift_card_meta', 'quantity'];
+
+    protected $casts = ['gift_card_meta' => 'array'];
+
+    public function giftCardDesign(): BelongsTo
+    {
+        return $this->belongsTo(GiftCardDesign::class);
+    }
 
     public function cart(): BelongsTo
     {
@@ -68,7 +75,7 @@ class CartItem extends Model
     public function displayTitle(): string
     {
         if ($this->isGiftCard()) {
-            return 'Gift Card — '.money($this->gift_card_value);
+            return ($this->giftCardDesign?->name ?? 'Gift Card').' — '.money($this->gift_card_value);
         }
 
         return $this->isBundle() ? $this->bundle->name : $this->variant->book->title;
@@ -77,7 +84,9 @@ class CartItem extends Model
     public function displaySubtitle(): string
     {
         if ($this->isGiftCard()) {
-            return 'Emailed to you after payment';
+            $to = $this->gift_card_meta['recipient_email'] ?? null;
+
+            return $to ? 'Emailed to '.($this->gift_card_meta['recipient_name'] ?? $to).' ('.$to.') after payment' : 'Emailed to you after payment';
         }
 
         return $this->isBundle()
@@ -88,7 +97,7 @@ class CartItem extends Model
     public function coverUrl(): string
     {
         if ($this->isGiftCard()) {
-            return asset('assets/img/gift-card-placeholder.svg');
+            return $this->giftCardDesign?->imageUrl() ?? asset('assets/img/gift-card-placeholder.svg');
         }
 
         return $this->isBundle() ? $this->bundle->coverUrl() : $this->variant->book->coverUrl();

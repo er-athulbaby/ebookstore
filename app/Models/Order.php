@@ -64,6 +64,12 @@ class Order extends Model
         return $this->total / 100;
     }
 
+    /** What is left to pay after wallet / gift card credit (voucher_amount). */
+    public function amountDue(): int
+    {
+        return max(0, $this->total - $this->voucher_amount);
+    }
+
     public function isPaid(): bool
     {
         return $this->payment_status === 'paid';

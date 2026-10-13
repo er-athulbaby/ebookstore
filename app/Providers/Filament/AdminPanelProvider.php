@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.75rem')
             ->favicon(asset('favicon.ico'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->pages([\App\Filament\Pages\ShippingSettings::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

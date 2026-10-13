@@ -12,8 +12,10 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'book_variant_id', 'bundle_id', 'gift_card_value', 'gift_voucher_id', 'book_title', 'variant_type', 'unit_price', 'quantity', 'line_total',
+        'order_id', 'book_variant_id', 'bundle_id', 'gift_card_value', 'gift_card_design_id', 'gift_card_meta', 'gift_voucher_id', 'book_title', 'variant_type', 'unit_price', 'quantity', 'line_total',
     ];
+
+    protected $casts = ['gift_card_meta' => 'array'];
 
     public function order(): BelongsTo
     {

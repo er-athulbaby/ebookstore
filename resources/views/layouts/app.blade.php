@@ -28,7 +28,7 @@
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div class="top-bar">
-    <div class="container">Free delivery on physical orders above {{ money(config('redcherry.free_delivery_threshold') * 100) }}</div>
+    <div class="container">@if(\App\Support\Shipping::freeAbove() > 0) Free delivery on physical orders above {{ money(\App\Support\Shipping::freeAbove()) }} @else Delivery across India @endif</div>
 </div>
 
 <header class="site-header">
@@ -192,7 +192,7 @@
     <div class="container trust-grid">
         <div class="trust-item">
             <span class="trust-icon"><i class="bi bi-truck"></i></span>
-            <div><b>Free Delivery</b><span>On orders above {{ money(config('redcherry.free_delivery_threshold') * 100) }}</span></div>
+            @if(\App\Support\Shipping::freeAbove() > 0)<div><b>Free Delivery</b><span>On orders above {{ money(\App\Support\Shipping::freeAbove()) }}</span></div>@else<div><b>Delivery</b><span>Across India</span></div>@endif
         </div>
         <div class="trust-item">
             <span class="trust-icon"><i class="bi bi-arrow-repeat"></i></span>

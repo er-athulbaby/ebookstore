@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/checkout/gift-card', [CheckoutController::class, 'redeemGiftCard'])->name('checkout.gift-card');
     Route::post('/checkout/razorpay/verify', [CheckoutController::class, 'verify'])->name('checkout.razorpay.verify');
     Route::get('/order/confirmation/{order:order_number}', [OrderController::class, 'confirmation'])->name('order.confirmation');
 

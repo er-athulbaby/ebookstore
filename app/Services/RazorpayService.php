@@ -22,7 +22,7 @@ class RazorpayService
     {
         $razorpayOrder = $this->api->order->create([
             'receipt' => $order->order_number,
-            'amount' => $order->total, // already in paise
+            'amount' => $order->amountDue(), // paise; the wallet part is taken separately
             'currency' => 'INR',
             'notes' => ['order_number' => $order->order_number, 'order_id' => (string) $order->id],
         ]);
@@ -30,7 +30,7 @@ class RazorpayService
         return $order->payments()->create([
             'provider' => 'razorpay',
             'provider_order_id' => $razorpayOrder['id'],
-            'amount' => $order->total,
+            'amount' => $order->amountDue(),
             'currency' => 'INR',
             'status' => 'created',
             'raw_payload' => $razorpayOrder->toArray(),
