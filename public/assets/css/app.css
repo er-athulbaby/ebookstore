@@ -214,7 +214,7 @@ a:hover { color: var(--rc-cherry); }
   font-size: 1.05rem; font-weight: 500;
 }
 .section-title { font-size: clamp(1.9rem, 3.2vw, 2.6rem); margin: .35rem 0 0; }
-.section-sub { color: var(--rc-ink-soft); font-weight: 600; margin: .35rem 0 0; max-width: 48ch; }
+.section-sub { color: var(--rc-burgundy); font-weight: 600; margin: .35rem 0 0; max-width: 48ch; }
 
 /* ---------- Hero ---------- */
 .hero {
