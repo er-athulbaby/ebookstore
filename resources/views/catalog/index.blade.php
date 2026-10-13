@@ -48,7 +48,7 @@
         <div class="mb-4">
             <h1 class="section-title h2 mb-1">{{ $heading }}</h1>
             @if($subheading ?? null)
-                <p class="text-muted mb-0">{{ $subheading }}</p>
+                <p class="section-sub mb-0">{{ $subheading }}</p>
             @endif
             <div class="text-muted small mt-1">{{ $books->total() }} {{ \Illuminate\Support\Str::plural('book', $books->total()) }}</div>
         </div>
@@ -164,7 +164,7 @@
             @if($books->isEmpty())
                 <div class="text-center text-muted py-5">
                     <i class="bi bi-book fs-1" aria-hidden="true"></i>
-                    <p class="mt-2 mb-2">No books match these filters.</p>
+                    <p class="mt-2 mb-2">{{ count($chips) ? 'No books match these filters.' : 'No books here yet — new titles are on the way.' }}</p>
                     @if(count($chips)) <a href="{{ $clearUrl }}" class="btn btn-outline-brand btn-sm">Clear filters</a> @endif
                 </div>
             @else

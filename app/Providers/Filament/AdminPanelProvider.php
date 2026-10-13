@@ -58,8 +58,12 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn () => \App\Support\SiteSettings::logoUrl())
             ->brandLogoHeight('2.75rem')
             ->favicon(fn () => \App\Support\SiteSettings::faviconUrl())
+            ->widgets([
+                \App\Filament\Widgets\SalesOverview::class, \App\Filament\Widgets\SalesChart::class,
+                \App\Filament\Widgets\TopBooks::class, \App\Filament\Widgets\LatestOrders::class,
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->pages([\App\Filament\Pages\SiteSettings::class, \App\Filament\Pages\ShippingSettings::class])
+            ->pages([\Filament\Pages\Dashboard::class, \App\Filament\Pages\SiteSettings::class, \App\Filament\Pages\ShippingSettings::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

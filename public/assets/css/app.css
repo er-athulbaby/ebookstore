@@ -206,7 +206,7 @@ a:hover { color: var(--rc-cherry); }
   font-size: 1.05rem; font-weight: 500;
 }
 .section-title { font-size: clamp(1.9rem, 3.2vw, 2.6rem); margin: .35rem 0 0; }
-.section-sub { color: var(--rc-muted); margin: .35rem 0 0; max-width: 48ch; }
+.section-sub { color: var(--rc-ink-soft); font-weight: 600; margin: .35rem 0 0; max-width: 48ch; }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -322,13 +322,13 @@ a:hover { color: var(--rc-cherry); }
 @media (min-width: 768px) { .category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1200px) { .category-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .category-tile {
-  display: flex; flex-direction: column; gap: .9rem; padding: 1.35rem 1.25rem; min-height: 168px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: .9rem; padding: 1.5rem 1.25rem; min-height: 168px;
   background: var(--rc-white); border: 1px solid var(--rc-line); border-radius: var(--rc-radius); color: var(--rc-ink);
   transition: border-color .25s var(--rc-ease);
 }
 .category-icon { width: 46px; height: 46px; border-radius: 50%; background: var(--rc-cream); color: var(--rc-cherry); display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: background-color .25s var(--rc-ease), color .25s var(--rc-ease); }
-.category-name { font-family: var(--rc-font-display); font-size: 1.35rem; font-weight: 600; line-height: 1.15; }
-.category-count { margin-top: auto; font-size: .84rem; font-weight: 600; color: var(--rc-muted); }
+.category-name { font-family: var(--rc-font-display); font-size: 1.35rem; font-weight: 700; line-height: 1.15; }
+.category-count { margin-top: auto; font-size: .9rem; font-weight: 700; color: var(--rc-ink-soft); }
 .category-tile:hover { border-color: var(--rc-burgundy); color: var(--rc-ink); }
 .category-tile:hover .category-icon { background: var(--rc-burgundy); color: #fff; }
 
@@ -353,7 +353,7 @@ a:hover { color: var(--rc-cherry); }
 /* ---------- Top 100 featured band ---------- */
 .top100-band { background: linear-gradient(160deg, var(--rc-burgundy) 0%, var(--rc-burgundy-dark) 100%); color: rgba(255, 255, 255, .88); }
 .top100-band .section-title { color: #fff; }
-.top100-band .section-sub { color: rgba(255, 255, 255, .72); }
+.top100-band .section-sub { color: rgba(255, 255, 255, .85); }
 .top100-band .btn-light { color: var(--rc-burgundy); }
 .top100-band .btn-light:hover { background: var(--rc-cream); color: var(--rc-burgundy-dark); }
 .top100-band .book-card .cover-wrap { background: rgba(255, 255, 255, .08); }
@@ -452,3 +452,6 @@ img.author-monogram { object-fit: cover; padding: 0; }
 .gift-card-tile { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--rc-line); border-radius: 14px; overflow: hidden; }
 .gift-card-art { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: var(--rc-cream); }
 .gift-card-custom { display: grid; place-items: center; font-size: 2.5rem; color: var(--rc-burgundy); }
+
+/* "View all books" link at the foot of the Categories menu */
+.categories-all { display: inline-flex; align-items: center; gap: .35rem; margin: .5rem 1rem .25rem; font-weight: 600; font-size: .9rem; }

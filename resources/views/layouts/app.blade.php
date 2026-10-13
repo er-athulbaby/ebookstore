@@ -22,9 +22,7 @@
 <body>
 {!! \App\Support\SiteSettings::bodyCode() !!}
 @php
-    $navCategories = \App\Models\Category::whereNull('parent_id')
-        ->whereHas('books', fn ($q) => $q->published()) // don't link to empty shelves
-        ->orderBy('sort_order')->get();
+    $navCategories = \App\Models\Category::whereNull('parent_id')->orderBy('sort_order')->orderBy('name')->get();
 @endphp
 
 <a class="skip-link" href="#main">Skip to content</a>
@@ -103,6 +101,7 @@
                             <li><a class="dropdown-item" href="{{ route('catalog.category', $navCategory) }}">{{ $navCategory->name }}</a></li>
                         @endforeach
                     </ul>
+                    <a class="categories-all" href="{{ route('search') }}">View all books <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </div>
             </div>
             <span class="nav-divider" aria-hidden="true"></span>
