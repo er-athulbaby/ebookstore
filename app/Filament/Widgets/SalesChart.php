@@ -10,6 +10,8 @@ class SalesChart extends ChartWidget
 {
     protected static ?int $sort = 2;
 
+    protected static bool $isLazy = false; // one request per dashboard load, not one per widget
+
     protected ?string $heading = 'Sales — last 30 days';
 
     protected ?string $description = 'Card/UPI and cash, per day (₹)';

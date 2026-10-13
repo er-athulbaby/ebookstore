@@ -11,6 +11,8 @@ class SalesOverview extends StatsOverviewWidget
 {
     protected static ?int $sort = 1;
 
+    protected static bool $isLazy = false; // one request per dashboard load, not one per widget
+
     protected function getStats(): array
     {
         $now = now();
