@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', config('redcherry.store_name').' — Physical Books & eBooks, Delivered Across India')
+@section('title', config('redcherry.store_name').' — '.\App\Support\SiteSettings::tagline())
 
 @section('content')
 @php

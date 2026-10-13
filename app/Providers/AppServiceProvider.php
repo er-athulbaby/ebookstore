@@ -23,5 +23,11 @@ class AppServiceProvider extends ServiceProvider
         if (parse_url((string) config('app.url'), PHP_URL_PATH)) {
             URL::forceRootUrl(config('app.url'));
         }
+
+        try {
+            \App\Support\SiteSettings::applyToConfig();
+        } catch (\Throwable) {
+            // No database yet (fresh install, before migrate) — keep the .env values.
+        }
     }
 }

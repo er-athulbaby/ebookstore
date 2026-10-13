@@ -54,12 +54,12 @@ class AdminPanelProvider extends PanelProvider
                 .'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap">'
                 .'<link rel="stylesheet" href="'.asset('assets/css/admin.css').'?v='.filemtime(public_path('assets/css/admin.css')).'">'
             ))
-            ->brandName('RedCherry Books Admin')
-            ->brandLogo(asset('assets/img/logo.svg'))
+            ->brandName(fn () => config('redcherry.store_name').' Admin')
+            ->brandLogo(fn () => \App\Support\SiteSettings::logoUrl())
             ->brandLogoHeight('2.75rem')
-            ->favicon(asset('favicon.ico'))
+            ->favicon(fn () => \App\Support\SiteSettings::faviconUrl())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->pages([\App\Filament\Pages\ShippingSettings::class])
+            ->pages([\App\Filament\Pages\SiteSettings::class, \App\Filament\Pages\ShippingSettings::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

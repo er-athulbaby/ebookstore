@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('redcherry.store_name'))</title>
-    <meta name="description" content="@yield('meta_description', 'RedCherry Books — physical and eBooks, delivered across India.')">
+    <meta name="description" content="@yield('meta_description', \App\Support\SiteSettings::metaDescription())">
     <meta name="theme-color" content="#fbf8f3">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" href="{{ \App\Support\SiteSettings::faviconUrl() }}" sizes="any">
     <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon-32.png') }}" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ asset('assets/img/apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ filemtime(public_path('assets/css/app.css')) }}">
     @stack('styles')
+    {!! \App\Support\SiteSettings::headCode() !!}
 </head>
 <body>
+{!! \App\Support\SiteSettings::bodyCode() !!}
 @php
     $navCategories = \App\Models\Category::whereNull('parent_id')
         ->whereHas('books', fn ($q) => $q->published()) // don't link to empty shelves
@@ -38,7 +40,7 @@
         </button>
 
         <a class="brand" href="{{ route('home') }}">
-            <img src="{{ asset('assets/img/logo.svg') }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113">
+            <img src="{{ \App\Support\SiteSettings::logoUrl() }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113">
         </a>
 
         <form action="{{ route('search') }}" method="GET" class="search-field d-none d-md-flex" role="search">
@@ -117,7 +119,7 @@
 <div class="offcanvas offcanvas-start mobile-nav" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
     <div class="offcanvas-header">
         <a href="{{ route('home') }}" class="brand" id="mobileNavLabel">
-            <img src="{{ asset('assets/img/logo.svg') }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113">
+            <img src="{{ \App\Support\SiteSettings::logoUrl() }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113">
         </a>
         <button type="button" class="icon-link" data-bs-dismiss="offcanvas" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
     </div>
@@ -212,7 +214,7 @@
 <footer class="site-footer">
     <div class="container footer-top">
         <div class="footer-brand">
-            <a href="{{ route('home') }}"><img src="{{ asset('assets/img/logo.svg') }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113"></a>
+            <a href="{{ route('home') }}"><img src="{{ \App\Support\SiteSettings::logoUrl() }}" alt="{{ config('redcherry.store_name') }}" width="312" height="113"></a>
             <p>The publishing company since 2014. Physical books and eBooks, delivered across India.</p>
         </div>
         <div class="footer-col">
