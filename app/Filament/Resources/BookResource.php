@@ -91,7 +91,8 @@ class BookResource extends Resource
                     Repeater::make('images')
                         ->relationship()
                         ->components([
-                            FileUpload::make('path')->image()->disk('public')->directory('books')->required(),
+                            FileUpload::make('path')->image()->disk('public')->directory('books')->required()
+                                ->helperText('Front cover, portrait 2:3 — 600 × 900 px (or larger, e.g. 1000 × 1500). JPG or WebP, under 500 KB.'),
                             TextInput::make('alt_text'),
                         ])
                         ->orderColumn('sort_order')

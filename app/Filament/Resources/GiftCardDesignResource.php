@@ -37,7 +37,7 @@ class GiftCardDesignResource extends Resource
                 ->formatStateUsing(fn ($state) => $state ? $state / 100 : null)
                 ->dehydrateStateUsing(fn ($state) => (int) round(((float) $state) * 100)),
             FileUpload::make('image_path')->label('Card image')->image()->disk('public')->directory('gift-cards')
-                ->helperText('Landscape works best (about 16:10). Also shown in the email.')->columnSpanFull(),
+                ->helperText('Landscape 16:10 — 800 × 500 px. Also shown in the gift card email.')->columnSpanFull(),
             TextInput::make('sort_order')->numeric()->default(0),
             Toggle::make('is_active')->label('On sale')->default(true),
         ]);

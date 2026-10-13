@@ -29,7 +29,8 @@ class BannerResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            FileUpload::make('image_path')->image()->disk('public')->directory('banners')->required(),
+            FileUpload::make('image_path')->image()->disk('public')->directory('banners')->required()
+                ->helperText('Wide 4:1 — 1600 × 400 px. Keep text and faces in the left two-thirds: phones show a narrower 5:2 crop from the left.'),
             TextInput::make('title')->maxLength(150),
             TextInput::make('link_url')->label('Link URL')->url()->helperText('Where the banner should take shoppers when clicked.'),
             TextInput::make('sort_order')->numeric()->default(0),

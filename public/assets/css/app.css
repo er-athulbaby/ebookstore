@@ -271,11 +271,11 @@ a:hover { color: var(--rc-cherry); }
 .book-card .title-link:focus-visible { outline: none; }
 .book-card:has(.title-link:focus-visible) { outline: 2px solid var(--rc-cherry); outline-offset: 4px; }
 .book-card .cover-wrap {
-  position: relative; aspect-ratio: 4 / 5; border-radius: var(--rc-radius); background: var(--rc-cream);
-  display: flex; align-items: center; justify-content: center; padding: 8% 12%;
+  position: relative; aspect-ratio: 2 / 3; border-radius: var(--rc-radius); background: transparent;
+  display: flex; align-items: center; justify-content: center; padding: 0;
   transition: background-color .3s var(--rc-ease);
 }
-.section-tinted .book-card .cover-wrap { background: var(--rc-white); }
+.section-tinted .book-card .cover-wrap { background: transparent; }
 .book-card .cover-wrap img {
   width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px 6px 6px 3px;
   box-shadow: var(--rc-shadow-book); transition: transform .35s var(--rc-ease), box-shadow .35s var(--rc-ease);
@@ -364,7 +364,7 @@ a:hover { color: var(--rc-cherry); }
 .top100-band .section-sub { color: rgba(255, 255, 255, .85); }
 .top100-band .btn-light { color: var(--rc-burgundy); }
 .top100-band .btn-light:hover { background: var(--rc-cream); color: var(--rc-burgundy-dark); }
-.top100-band .book-card .cover-wrap { background: rgba(255, 255, 255, .08); }
+.top100-band .book-card .cover-wrap { background: transparent; }
 .top100-band .book-card .title, .top100-band .book-card .price .final, .top100-band .book-card .rating { color: #fff; }
 .top100-band .book-card .author, .top100-band .book-card .price .mrp { color: rgba(255, 255, 255, .85); }
 

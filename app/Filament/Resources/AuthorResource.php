@@ -37,7 +37,8 @@ class AuthorResource extends Resource
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
             TextInput::make('slug')->unique(ignoreRecord: true)->helperText('Filled in automatically from the name; edit only if you need a different web address.'),
-            FileUpload::make('photo_path')->image()->disk('public')->directory('authors'),
+            FileUpload::make('photo_path')->image()->disk('public')->directory('authors')
+                ->helperText('Square portrait — 400 × 400 px, face centred (shown as a circle). JPG or WebP.'),
             Textarea::make('bio')->columnSpanFull(),
             Toggle::make('is_active')->label('Active (shown on the website)')->default(true),
         ]);

@@ -20,7 +20,8 @@ class Shipping
 
     public static function for(int $netAmount, bool $hasPhysical): int
     {
-        if (! $hasPhysical) {
+        // Nothing to ship, or a coupon already covers the books: no delivery charge.
+        if (! $hasPhysical || $netAmount <= 0) {
             return 0;
         }
 

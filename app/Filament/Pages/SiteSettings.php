@@ -74,10 +74,10 @@ class SiteSettings extends Page
                 ->components([
                     FileUpload::make('logo_path')->label('Logo')->image()->disk('public')->directory('branding')
                         ->acceptedFileTypes(['image/svg+xml', 'image/png', 'image/webp', 'image/jpeg'])
-                        ->helperText('Header, footer and admin. SVG or a wide PNG with a transparent background. Leave empty to use the built-in logo.'),
+                        ->helperText('Header, footer and admin. SVG, or a wide PNG about 624 × 226 px with a transparent background. Leave empty to use the built-in logo.'),
                     FileUpload::make('favicon_path')->label('Favicon')->disk('public')->directory('branding')
                         ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/vnd.microsoft.icon', 'image/svg+xml'])
-                        ->helperText('Browser tab icon. Square PNG (at least 64×64) or .ico.'),
+                        ->helperText('Browser tab icon. Square PNG 512 × 512 px (or .ico).'),
                 ]),
 
             Section::make('Email (SMTP)')

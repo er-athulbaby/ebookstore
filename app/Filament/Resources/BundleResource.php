@@ -55,7 +55,7 @@ class BundleResource extends Resource
                 ->formatStateUsing(fn ($state) => $state ? $state / 100 : null)
                 ->dehydrateStateUsing(fn ($state) => (int) round(((float) $state) * 100)),
             FileUpload::make('image_path')->image()->disk('public')->directory('bundles')
-                ->helperText('Optional — falls back to the first book\'s cover if left blank.'),
+                ->helperText('Optional — portrait 2:3, 600 × 900 px. Falls back to the first book\'s cover if left blank.'),
             Textarea::make('description')->columnSpanFull(),
             Toggle::make('is_active')->default(true),
         ]);
