@@ -33,6 +33,9 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        $heroBooks = Book::published()->where('is_featured', true)
+            ->with($eagerLoad)->latest('updated_at')->take(5)->get();
+
         $categories = Category::whereNull('parent_id')
             ->withCount(['books' => fn ($q) => $q->published()])
             ->orderBy('sort_order')
@@ -45,6 +48,6 @@ class HomeController extends Controller
             ->take(20)
             ->get();
 
-        return view('home.index', compact('banners', 'newReleases', 'bestsellers', 'top100', 'categories', 'authors'));
+        return view('home.index', compact('heroBooks', 'banners', 'newReleases', 'bestsellers', 'top100', 'categories', 'authors'));
     }
 }

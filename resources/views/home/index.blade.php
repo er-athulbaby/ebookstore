@@ -6,8 +6,8 @@
 @php
     $categories = $categories->where('books_count', '>', 0); // hide empty shelves
 
-    // Hero shelf: books with real cover art first, then the rest (presentation only).
-    $heroBooks = $newReleases->concat($bestsellers)->concat($top100)->unique('id')
+    // Hero shelf: books ticked "Show in homepage hero" in admin; if none, an automatic pick with real cover art first.
+    if ($heroBooks->isEmpty()) $heroBooks = $newReleases->concat($bestsellers)->concat($top100)->unique('id')
         ->sortByDesc(fn ($b) => $b->images->isNotEmpty())->take(5)->values();
 
     $categoryIcon = function (string $name): string {

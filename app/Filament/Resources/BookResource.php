@@ -74,7 +74,8 @@ class BookResource extends Resource
             Section::make('Merchandising')
                 ->columns(4)
                 ->components([
-                    Toggle::make('is_featured'),
+                    Toggle::make('is_featured')->label('Show in homepage hero')
+                        ->helperText('Up to 5 ticked books appear in the hero. None ticked = automatic pick.'),
                     Toggle::make('is_bestseller'),
                     Toggle::make('is_top100'),
                     Select::make('status')
@@ -158,6 +159,7 @@ class BookResource extends Resource
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('authors.name')->badge()->label('Author(s)'),
                 TextColumn::make('category.name')->label('Category'),
+                IconColumn::make('is_featured')->boolean()->label('Hero'),
                 IconColumn::make('is_bestseller')->boolean()->label('Bestseller'),
                 IconColumn::make('is_top100')->boolean()->label('Top 100'),
                 TextColumn::make('status')->badge()->color(fn (string $state) => $state === 'published' ? 'success' : 'gray'),
@@ -166,6 +168,7 @@ class BookResource extends Resource
             ->filters([
                 SelectFilter::make('status')->options(['draft' => 'Draft', 'published' => 'Published']),
                 SelectFilter::make('category_id')->relationship('category', 'name')->label('Category'),
+                TernaryFilter::make('is_featured')->label('In homepage hero'),
                 TernaryFilter::make('is_bestseller'),
                 TernaryFilter::make('is_top100'),
             ])
