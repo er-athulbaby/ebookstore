@@ -59,6 +59,10 @@ h1, h2, h3, h4, h5, h6, .section-title, .stat-num {
   line-height: 1.15;
   text-wrap: balance;
 }
+/* Small panel headings (Shipping Address, Order Summary, Payment Method…) read poorly in the
+   display serif at this size, so they use the bold UI sans; big titles keep the serif. */
+h5, .h5, h6, .h6 { font-family: var(--rc-font-body); font-weight: 700; letter-spacing: 0; color: var(--rc-ink); }
+h6, .h6 { font-size: 1.05rem; margin-bottom: .75rem; }
 p { text-wrap: pretty; }
 a { color: var(--rc-burgundy); text-decoration: none; transition: color .2s var(--rc-ease); }
 a:hover { color: var(--rc-cherry); }
