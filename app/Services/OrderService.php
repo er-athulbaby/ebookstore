@@ -34,9 +34,8 @@ class OrderService
         $hasPhysical = $cart->hasPhysicalItems();
         $hasDigital = $cart->hasDigitalItems();
         $hasGiftCard = $cart->hasGiftCardItems();
-        $needsOnlinePayment = $hasDigital || $hasGiftCard;
 
-        abort_if($paymentMethod === 'cod' && $needsOnlinePayment, 422,
+        abort_if($paymentMethod === 'cod' && ($hasGiftCard || ($hasDigital && ! config('redcherry.cod_for_ebooks'))), 422,
             'Cash on Delivery isn\'t available for eBooks or gift card purchases — these are delivered instantly and require online payment or wallet.');
         abort_if($hasPhysical && ! $shippingAddressId, 422, 'A shipping address is required for physical items.');
 

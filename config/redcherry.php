@@ -24,6 +24,9 @@ return [
     // Preset denominations (₹) shown on the gift card purchase page.
     'gift_card_denominations' => [250, 500, 1000, 2000],
 
+    // Testing only: lets eBook orders use Cash on Delivery (the eBook is unlocked without payment).
+    'cod_for_ebooks' => env('COD_FOR_EBOOKS', false),
+
     'support_whatsapp' => env('SUPPORT_WHATSAPP', ''),
     'support_email' => env('SUPPORT_EMAIL', 'support@redcherrybooks.example'),
     'support_phone' => env('SUPPORT_PHONE', ''),

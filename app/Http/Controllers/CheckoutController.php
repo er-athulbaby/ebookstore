@@ -35,7 +35,7 @@ class CheckoutController extends Controller
             'coupon' => $coupon,
             'discount' => $discount,
             'requiresAddress' => $cart->hasPhysicalItems(),
-            'allowCod' => ! $cart->hasDigitalItems() && ! $hasGiftCard,
+            'allowCod' => (config('redcherry.cod_for_ebooks') || ! $cart->hasDigitalItems()) && ! $hasGiftCard,
             'walletBalance' => Auth::user()->wallet_balance,
             'allowWallet' => Auth::user()->wallet_balance >= $total,
         ]);
