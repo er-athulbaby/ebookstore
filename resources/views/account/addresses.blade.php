@@ -30,8 +30,13 @@
                 <form method="POST" action="{{ route('account.addresses.store') }}">
                     @csrf
                     <div class="row g-2">
-                        <div class="col-6"><input name="label" class="form-control form-control-sm" placeholder="Label (e.g. Home)"></div>
-                        <div class="col-6"><input name="full_name" class="form-control form-control-sm" placeholder="Full Name *" required></div>
+                        <div class="col-12" role="radiogroup" aria-label="Address type">
+                            @foreach(['Home' => 'bi-house', 'Work' => 'bi-briefcase', 'Other' => 'bi-geo-alt'] as $type => $icon)
+                                <input type="radio" class="btn-check" name="label" id="label{{ $type }}" value="{{ $type }}" @checked($loop->first)>
+                                <label class="btn btn-sm btn-outline-brand me-1" for="label{{ $type }}"><i class="bi {{ $icon }} me-1" aria-hidden="true"></i>{{ $type }}</label>
+                            @endforeach
+                        </div>
+                        <div class="col-12"><input name="full_name" class="form-control form-control-sm" placeholder="Full Name *" required></div>
                         <div class="col-12"><input name="phone" class="form-control form-control-sm" placeholder="Phone *" required></div>
                         <div class="col-12"><input name="line1" class="form-control form-control-sm" placeholder="Address Line 1 *" required></div>
                         <div class="col-12"><input name="line2" class="form-control form-control-sm" placeholder="Address Line 2"></div>
