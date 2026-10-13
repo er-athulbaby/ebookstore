@@ -20,6 +20,8 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
+    protected static ?int $navigationSort = 9;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->columns(2)->components([

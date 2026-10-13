@@ -28,6 +28,8 @@ class BookResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
@@ -40,7 +42,7 @@ class BookResource extends Resource
                         ->required()
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                    TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                    TextInput::make('slug')->unique(ignoreRecord: true)->helperText('Filled in automatically from the name; edit only if you need a different web address.'),
                     Select::make('category_id')
                         ->relationship('category', 'name')
                         ->required()
@@ -53,7 +55,15 @@ class BookResource extends Resource
                     TextInput::make('isbn'),
                     TextInput::make('edition'),
                     TextInput::make('pages')->numeric(),
-                    TextInput::make('language')->default('English')->required(),
+                    \Filament\Forms\Components\Select::make('language')
+                        ->options(fn () => collect(['Malayalam', 'English'])
+                            ->merge(Book::query()->distinct()->pluck('language'))
+                            ->filter()->unique()->sort()->mapWithKeys(fn ($l) => [$l => $l])->all())
+                        ->searchable()
+                        ->default('Malayalam')
+                        ->required()
+                        ->createOptionForm([TextInput::make('language')->label('New language')->required()])
+                        ->createOptionUsing(fn (array $data) => trim($data['language'])),
                     TextInput::make('publisher')->default('RedCherry Books')->required(),
                     \Filament\Forms\Components\DatePicker::make('published_at'),
                 ]),

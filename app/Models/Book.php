@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Book extends Model
 {
-    use HasFactory;
+    use GeneratesSlug, HasFactory;
 
     protected $fillable = [
         'category_id', 'title', 'slug', 'description', 'publisher', 'isbn',

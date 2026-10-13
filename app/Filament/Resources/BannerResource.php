@@ -21,6 +21,8 @@ class BannerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-photo';
 
+    protected static ?int $navigationSort = 8;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

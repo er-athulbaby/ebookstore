@@ -22,6 +22,8 @@ class OrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
 
+    protected static ?int $navigationSort = 5;
+
     // Orders are created by checkout, not by hand — admin only views/updates status.
     public static function canCreate(): bool
     {

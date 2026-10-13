@@ -21,6 +21,8 @@ class CouponResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
+    protected static ?int $navigationSort = 6;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->columns(2)->components([
@@ -30,7 +32,7 @@ class CouponResource extends Resource
             TextInput::make('value')
                 ->label(fn (callable $get) => $get('type') === 'fixed' ? 'Amount off (₹)' : 'Percent off (%)')
                 ->numeric()->required()
-                ->formatStateUsing(fn ($state, callable $get) => $state && $get('type') === 'fixed' ? $state / 100 : $state)
+                ->formatStateUsing(fn ($state, ?Coupon $record) => $state && $record?->type === 'fixed' ? $state / 100 : $state)
                 ->dehydrateStateUsing(fn ($state, callable $get) => $get('type') === 'fixed' ? (int) round(((float) $state) * 100) : (int) $state),
             TextInput::make('min_order_amount')
                 ->label('Minimum order (₹)')
@@ -49,7 +51,9 @@ class CouponResource extends Resource
             ->columns([
                 TextColumn::make('code')->searchable()->sortable(),
                 TextColumn::make('type')->badge(),
-                TextColumn::make('value')->label('Value'),
+                TextColumn::make('value')->label('Value')
+                    ->formatStateUsing(fn ($state, Coupon $record) => $record->type === 'fixed' ? money($state) : $state.'%'),
+                TextColumn::make('min_order_amount')->label('Min order')->formatStateUsing(fn ($state) => money($state)),
                 TextColumn::make('used_count')->label('Used'),
                 TextColumn::make('max_uses')->label('Max uses')->placeholder('∞'),
                 TextColumn::make('expires_at')->dateTime('d M Y'),

@@ -20,6 +20,8 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -27,7 +29,7 @@ class CategoryResource extends Resource
                 ->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-            TextInput::make('slug')->required()->unique(ignoreRecord: true),
+            TextInput::make('slug')->unique(ignoreRecord: true)->helperText('Filled in automatically from the name; edit only if you need a different web address.'),
             Select::make('parent_id')->relationship('parent', 'name')->label('Parent category'),
             TextInput::make('sort_order')->numeric()->default(0),
             Textarea::make('description')->columnSpanFull(),

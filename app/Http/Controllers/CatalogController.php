@@ -27,6 +27,7 @@ class CatalogController extends Controller
 
     public function author(Request $request, Author $author)
     {
+        abort_unless($author->is_active, 404);
         $query = Book::published()->whereHas('authors', fn (Builder $q) => $q->where('authors.id', $author->id));
         return $this->listing($request, $query, [
             'heading' => $author->name,
@@ -95,7 +96,7 @@ class CatalogController extends Controller
             'context' => null,
             'filterCategories' => Category::whereHas('books', $published)
                 ->withCount(['books' => $published])->orderBy('sort_order')->orderBy('name')->get(),
-            'filterAuthors' => Author::whereHas('books', $published)
+            'filterAuthors' => Author::active()->whereHas('books', $published)
                 ->withCount(['books' => $published])->orderBy('name')->get(),
             'filterLanguages' => Book::published()->distinct()->orderBy('language')->pluck('language'),
         ]);

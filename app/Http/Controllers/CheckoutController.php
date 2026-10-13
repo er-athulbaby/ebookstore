@@ -47,8 +47,10 @@ class CheckoutController extends Controller
         $cart->load('items.variant.book', 'items.bundle.variants');
 
         $data = $request->validate([
-            'shipping_address_id' => ['nullable', 'exists:addresses,id'],
+            'shipping_address_id' => [\Illuminate\Validation\Rule::requiredIf($cart->hasPhysicalItems()), 'nullable', 'exists:addresses,id'],
             'payment_method' => ['required', 'in:razorpay,cod,wallet'],
+        ], [
+            'shipping_address_id.required' => 'Please add a shipping address before placing the order.',
         ]);
 
         if (! empty($data['shipping_address_id'])) {

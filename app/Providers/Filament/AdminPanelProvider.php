@@ -29,6 +29,8 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#ed1c24'),
             ])
             ->brandName('RedCherry Books Admin')
+            ->brandLogo(asset('assets/img/logo.svg'))
+            ->brandLogoHeight('2.75rem')
             ->favicon(asset('favicon.ico'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->middleware([

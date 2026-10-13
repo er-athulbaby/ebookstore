@@ -39,7 +39,7 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $authors = Author::whereHas('books', fn ($q) => $q->published())
+        $authors = Author::active()->whereHas('books', fn ($q) => $q->published())
             ->withCount(['books' => fn ($q) => $q->published()])
             ->orderByDesc('books_count')
             ->take(20)
