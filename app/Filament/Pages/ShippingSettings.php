@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Setting;
 use App\Support\Shipping;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -25,6 +26,8 @@ class ShippingSettings extends Page
     protected static ?string $title = 'Shipping charges';
 
     protected static ?int $navigationSort = 11;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
     public ?array $data = [];
 

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Models\Order;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -23,6 +24,8 @@ class OrderResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
 
     protected static ?int $navigationSort = 5;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Sales';
 
     // Orders are created by checkout, not by hand — admin only views/updates status.
     public static function canCreate(): bool
@@ -78,8 +81,10 @@ class OrderResource extends Resource
                 TextColumn::make('order_number')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Customer')->searchable(),
                 TextColumn::make('status')->badge()->color(fn (Order $record) => $record->statusColor()),
-                TextColumn::make('payment_status')->badge(),
-                TextColumn::make('payment_method')->badge(),
+                TextColumn::make('payment_status')->badge()->color(fn (string $state) => match ($state) {
+                    'paid' => 'success', 'pending' => 'warning', 'failed' => 'danger', default => 'gray',
+                }),
+                TextColumn::make('payment_method')->badge()->color('gray'),
                 TextColumn::make('total')->formatStateUsing(fn ($state) => money($state))->sortable(),
                 TextColumn::make('placed_at')->dateTime('d M Y, h:i A')->sortable(),
             ])

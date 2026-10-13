@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BookResource\Pages;
 use App\Models\Book;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -29,6 +30,8 @@ class BookResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?int $navigationSort = 3;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Catalog';
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -155,7 +158,8 @@ class BookResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('images.0.path')->disk('public')->label('Cover')->square(),
+                ImageColumn::make('cover')->label('Cover')->disk('public')->height(56)
+                    ->state(fn (Book $record) => $record->images->first()?->path), // 'images.0.path' rendered nothing
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('authors.name')->badge()->label('Author(s)'),
                 TextColumn::make('category.name')->label('Category'),

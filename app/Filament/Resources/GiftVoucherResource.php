@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Models\GiftVoucher;
 use App\Filament\Resources\GiftVoucherResource\Pages;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
@@ -23,6 +24,8 @@ class GiftVoucherResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-gift';
 
     protected static ?int $navigationSort = 7;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Sales';
 
     public static function form(Schema $schema): Schema
     {

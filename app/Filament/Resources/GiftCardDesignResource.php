@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\GiftCardDesignResource\Pages;
 use App\Models\GiftCardDesign;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -25,6 +26,8 @@ class GiftCardDesignResource extends Resource
     protected static ?string $navigationLabel = 'Gift Card Designs';
 
     protected static ?int $navigationSort = 7;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Sales';
 
     public static function form(Schema $schema): Schema
     {

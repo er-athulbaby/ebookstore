@@ -1,0 +1,88 @@
+/*
+ * RedCherry Books admin skin — loaded into the Filament panel via a render hook
+ * (no Vite/Tailwind build on the host). Visual only: no layout logic changes.
+ * Palette follows the storefront: ivory/cream paper, burgundy accent, charcoal ink.
+ */
+:root {
+  --rc-ivory: #fbf8f3;
+  --rc-cream: #f4eee4;
+  --rc-line: #e9dfd1;
+  --rc-burgundy: #8c1c2b;
+  --rc-burgundy-soft: #f6e9ea;
+  --rc-ink: #231f20;
+  --rc-muted: #5f5753;
+  --rc-radius: 14px;
+  --rc-shadow: 0 1px 2px rgba(60, 25, 20, .05), 0 6px 18px -10px rgba(60, 25, 20, .12);
+}
+
+/* Page canvas */
+.fi-body { background: var(--rc-ivory); color: var(--rc-ink); }
+
+/* Headings carry the brand serif; everything else stays in the UI sans for legibility */
+.fi-header-heading,
+.fi-simple-header-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+.fi-header-heading { font-size: 2rem; line-height: 1.15; }
+
+/* Sidebar */
+.fi-sidebar { background: #fff; border-right: 1px solid var(--rc-line); }
+.fi-sidebar-header { background: #fff; border-bottom: 1px solid var(--rc-line); box-shadow: none; }
+.fi-sidebar-nav { padding-top: 1.25rem; }
+.fi-sidebar-group-label { color: var(--rc-muted); font-weight: 600; font-size: .78rem; letter-spacing: .02em; }
+.fi-sidebar-item-btn { border-radius: 10px; transition: background-color .15s ease, color .15s ease; }
+.fi-sidebar-item-btn:hover { background: var(--rc-cream); }
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn { background: var(--rc-burgundy-soft); }
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon { color: var(--rc-burgundy); font-weight: 600; }
+/* A slim accent bar marks where you are without relying on colour alone */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn { box-shadow: inset 3px 0 0 var(--rc-burgundy); }
+
+/* Top bar */
+.fi-topbar > nav, .fi-topbar { background: rgba(255, 255, 255, .92); }
+.fi-topbar > nav { border-bottom: 1px solid var(--rc-line); box-shadow: none; backdrop-filter: saturate(1.2) blur(6px); }
+
+/* Cards: sections, tables, widgets share one radius, hairline border and soft warm shadow */
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat {
+  border-radius: var(--rc-radius) !important;
+  box-shadow: var(--rc-shadow) !important;
+  --tw-ring-color: var(--rc-line) !important;
+}
+
+/* Tables */
+.fi-ta-header-cell { background: var(--rc-cream); color: var(--rc-ink); font-weight: 600; }
+.fi-ta-row { transition: background-color .12s ease; }
+.fi-ta-row:hover { background: #fdfaf6; }
+.fi-ta-image img { border-radius: 6px; }
+
+/* Primary buttons: deeper burgundy, readable white label */
+.fi-btn.fi-color-primary:not(.fi-outlined):not(.fi-btn-link) { box-shadow: 0 1px 0 rgba(0, 0, 0, .08); }
+
+/* Inputs: warm hairline, clear burgundy focus ring */
+.fi-input-wrp { --tw-ring-color: var(--rc-line); border-radius: 10px; }
+.fi-input-wrp:focus-within { --tw-ring-color: var(--rc-burgundy); }
+
+/* Login */
+.fi-simple-layout {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(140, 28, 43, .10), transparent 60%),
+    radial-gradient(40rem 24rem at -10% 110%, rgba(6, 104, 57, .07), transparent 60%),
+    var(--rc-cream);
+}
+.fi-simple-main {
+  border-radius: 20px !important;
+  box-shadow: 0 24px 60px -30px rgba(60, 25, 20, .35) !important;
+  --tw-ring-color: var(--rc-line) !important;
+}
+
+/* Keyboard focus stays obvious everywhere */
+.fi-sidebar-item-btn:focus-visible,
+.fi-btn:focus-visible { outline: 2px solid var(--rc-burgundy); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fi-sidebar-item-btn, .fi-ta-row { transition: none; }
+}
