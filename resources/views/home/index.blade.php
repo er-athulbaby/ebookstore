@@ -25,7 +25,41 @@
     };
 @endphp
 
-    {{-- Hero --}}
+    {{-- Hero: full-width slider of the banners managed in /admin → Banners --}}
+    @if($banners->isNotEmpty())
+        <section class="hero-slider" aria-label="Featured offers">
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                @if($banners->count() > 1)
+                    <div class="carousel-indicators">
+                        @foreach($banners as $banner)
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $loop->index }}" @if($loop->first) class="active" aria-current="true" @endif aria-label="Slide {{ $loop->iteration }}"></button>
+                        @endforeach
+                    </div>
+                @endif
+                <div class="carousel-inner">
+                    @foreach($banners as $banner)
+                        <div class="carousel-item @if($loop->first) active @endif">
+                            @if($banner->link_url)<a href="{{ $banner->link_url }}">@endif
+                                <img src="{{ $banner->url() }}" class="d-block w-100 hero-slide-img" alt="{{ $banner->title ?? config('redcherry.store_name') }}"
+                                     @if(! $loop->first) loading="lazy" @endif decoding="async">
+                            @if($banner->link_url)</a>@endif
+                        </div>
+                    @endforeach
+                </div>
+                @if($banners->count() > 1)
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                @endif
+            </div>
+        </section>
+    @else
+    {{-- No banners yet: text hero with the featured-books fan --}}
     <section class="hero">
         <div class="container hero-grid">
             <div class="hero-copy">
@@ -49,6 +83,8 @@
         </div>
     </section>
 
+    @endif
+
     {{-- New Releases --}}
     <section class="home-section">
         <div class="container">
@@ -66,42 +102,6 @@
             </div>
         </div>
     </section>
-
-    {{-- Promotional banners (managed in /admin → Banners) --}}
-    @if($banners->isNotEmpty())
-        <section class="promo-section">
-            <div class="container">
-                <div id="heroCarousel" class="carousel slide promo-carousel" data-bs-ride="carousel">
-                    @if($banners->count() > 1)
-                        <div class="carousel-indicators">
-                            @foreach($banners as $banner)
-                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $loop->index }}" @if($loop->first) class="active" aria-current="true" @endif aria-label="Slide {{ $loop->iteration }}"></button>
-                            @endforeach
-                        </div>
-                    @endif
-                    <div class="carousel-inner">
-                        @foreach($banners as $banner)
-                            <div class="carousel-item @if($loop->first) active @endif">
-                                @if($banner->link_url)<a href="{{ $banner->link_url }}">@endif
-                                    <img src="{{ $banner->url() }}" class="d-block w-100 hero-banner-img" alt="{{ $banner->title ?? config('redcherry.store_name') }}">
-                                @if($banner->link_url)</a>@endif
-                            </div>
-                        @endforeach
-                    </div>
-                    @if($banners->count() > 1)
-                        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    @endif
-                </div>
-            </div>
-        </section>
-    @endif
 
     {{-- Best Sellers --}}
     @if($bestsellers->isNotEmpty())
@@ -173,20 +173,22 @@
     </section>
     @endif
 
-    {{-- Top 100 --}}
+    {{-- Top 100: fanned covers, same treatment as the featured-books hero --}}
     @if($top100->isNotEmpty())
     <section class="home-section top100-band">
-        <div class="container">
-            <div class="section-head">
-                <div>
-                    <h2 class="section-title">RedCherry Top 100</h2>
-                    <p class="section-sub">The definitive reading list — books every shelf deserves.</p>
+        <div class="container hero-grid top100-grid">
+            <div class="hero-copy">
+                <h2 class="section-title">RedCherry Top 100</h2>
+                <p class="section-sub">The definitive reading list — books every shelf deserves.</p>
+                <div class="hero-actions">
+                    <a href="{{ route('catalog.top100') }}" class="btn btn-light btn-lg">View All Top 100</a>
                 </div>
-                <a href="{{ route('catalog.top100') }}" class="btn btn-light">View All Top 100</a>
             </div>
-            <div class="book-rail">
-                @foreach($top100 as $book)
-                    <x-book-card :book="$book" />
+            <div class="hero-shelf" aria-label="Top 100 books">
+                @foreach($top100->take(5) as $book)
+                    <a href="{{ route('books.show', $book) }}" class="hero-book hero-book-{{ $loop->iteration }}" data-hero-book title="{{ $book->title }}">
+                        <img src="{{ $book->coverUrl() }}" alt="{{ $book->title }} by {{ $book->authorNames() }}" loading="lazy" decoding="async">
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -207,28 +209,32 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
-(function () {
+document.querySelectorAll('.hero-shelf').forEach(function (shelf) {
+    var books = shelf.querySelectorAll('[data-hero-book]');
+
     // Touch screens have no hover, so the first tap on a tucked-away cover brings it to the front; the next tap opens it.
-    if (!matchMedia('(hover: none)').matches) return;
-    var books = document.querySelectorAll('[data-hero-book]');
-    books.forEach(function (book) {
-        book.addEventListener('click', function (e) {
-            if (book.classList.contains('is-raised') || book.classList.contains('hero-book-1') && !document.querySelector('.hero-book.is-raised')) return;
-            e.preventDefault();
-            books.forEach(function (b) { b.classList.toggle('is-raised', b === book); });
+    if (matchMedia('(hover: none)').matches) {
+        books.forEach(function (book) {
+            book.addEventListener('click', function (e) {
+                var raised = shelf.querySelector('.is-raised');
+                if (book === raised || (!raised && book.classList.contains('hero-book-1'))) return;
+                e.preventDefault();
+                books.forEach(function (b) { b.classList.toggle('is-raised', b === book); });
+            });
         });
-    });
-})();
-(function () {
-    // One orchestrated moment: the cover fan settles in on load. Nothing else animates on its own.
-    if (typeof gsap === 'undefined' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var books = gsap.utils.toArray('[data-hero-book]');
-    if (!books.length) return;
-    gsap.from(books, {
-        y: 48, autoAlpha: 0, duration: 1, ease: 'power3.out', delay: .1,
-        stagger: { each: .09, from: 'center' },
-        clearProps: 'transform,opacity,visibility'
-    });
-})();
+    }
+
+    // The fan settles in once, when it first comes into view.
+    if (typeof gsap === 'undefined' || matchMedia('(prefers-reduced-motion: reduce)').matches || !books.length) return;
+    gsap.set(books, { autoAlpha: 0, y: 48 });
+    new IntersectionObserver(function (entries, io) {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        gsap.to(books, {
+            y: 0, autoAlpha: 1, duration: 1, ease: 'power3.out',
+            stagger: { each: .09, from: 'center' }, clearProps: 'transform,opacity,visibility'
+        });
+    }, { threshold: .25 }).observe(shelf);
+});
 </script>
 @endpush
