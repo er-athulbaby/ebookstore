@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Hostinger terminates HTTPS at its proxy. Without trusting it, Laravel sees http:// and the
+        // signed Livewire upload URL (https) fails its signature check -> "failed to upload".
+        $middleware->trustProxies(at: '*');
         $middleware->web(append: [
             \App\Http\Middleware\ShareCartCount::class,
         ]);
