@@ -10,6 +10,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -43,13 +44,23 @@ class OrderResource extends Resource
                     Placeholder::make('customer')->content(fn (Order $record) => $record->user?->name.' ('.$record->contact_email.')'),
                     Placeholder::make('total')->content(fn (Order $record) => money($record->total)),
                     Select::make('status')
-                        ->options([
-                            'pending' => 'Pending', 'paid' => 'Paid', 'processing' => 'Processing',
-                            'shipped' => 'Shipped', 'delivered' => 'Delivered',
-                            'cancelled' => 'Cancelled', 'refunded' => 'Refunded',
-                        ])
+                        ->options(fn (Order $record) => $record->allowedStatuses())
+                        ->in(fn (Order $record) => array_keys($record->allowedStatuses()))
+                        ->helperText(fn (Order $record) => match (true) {
+                            $record->payment_status === 'paid' => null,
+                            $record->payment_method === 'cod' => 'Setting "Delivered" also marks the cash as received.',
+                            default => 'Not paid online yet, so it can only stay pending or be cancelled.',
+                        })
+                        ->live()
                         ->required(),
-                    Placeholder::make('payment_status')->content(fn (Order $record) => ucfirst($record->payment_status)),
+                    // COD: admin records the cash; online payments are confirmed by Razorpay, so read-only.
+                    Toggle::make('cash_received')->label('Cash received')
+                        ->visible(fn (Order $record) => $record->payment_method === 'cod')
+                        ->afterStateHydrated(fn (Toggle $component, Order $record) => $component->state($record->payment_status === 'paid'))
+                        ->dehydrated(false),
+                    Placeholder::make('payment_status')
+                        ->visible(fn (Order $record) => $record->payment_method !== 'cod')
+                        ->content(fn (Order $record) => $record->paymentStatusLabel()),
                     Placeholder::make('payment_method')->content(fn (Order $record) => strtoupper($record->payment_method)),
                 ]),
             Section::make('Items')
@@ -80,10 +91,13 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('order_number')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Customer')->searchable(),
-                TextColumn::make('status')->badge()->color(fn (Order $record) => $record->statusColor()),
-                TextColumn::make('payment_status')->badge()->color(fn (string $state) => match ($state) {
-                    'paid' => 'success', 'pending' => 'warning', 'failed' => 'danger', default => 'gray',
-                }),
+                TextColumn::make('status')->badge()->color(fn (Order $record) => $record->statusColor())
+                    ->formatStateUsing(fn (Order $record) => $record->statusLabel()),
+                TextColumn::make('payment_status')->label('Payment')->badge()
+                    ->formatStateUsing(fn (Order $record) => $record->paymentStatusLabel())
+                    ->color(fn (string $state) => match ($state) {
+                        'paid' => 'success', 'pending' => 'warning', 'failed' => 'danger', default => 'gray',
+                    }),
                 TextColumn::make('payment_method')->badge()->color('gray'),
                 TextColumn::make('total')->formatStateUsing(fn ($state) => money($state))->sortable(),
                 TextColumn::make('placed_at')->dateTime('d M Y, h:i A')->sortable(),
@@ -94,7 +108,7 @@ class OrderResource extends Resource
                     'shipped' => 'Shipped', 'delivered' => 'Delivered',
                     'cancelled' => 'Cancelled', 'refunded' => 'Refunded',
                 ]),
-                SelectFilter::make('payment_method')->options(['razorpay' => 'Razorpay', 'cod' => 'COD']),
+                SelectFilter::make('payment_method')->options(['razorpay' => 'Razorpay', 'cod' => 'COD', 'free' => 'No payment needed']),
             ])
             ->defaultSort('placed_at', 'desc');
     }

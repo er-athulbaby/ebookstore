@@ -75,6 +75,40 @@ class Order extends Model
         return $this->payment_status === 'paid';
     }
 
+    public const STATUS_LABELS = [
+        'pending' => 'Pending', 'paid' => 'Paid', 'processing' => 'Processing',
+        'shipped' => 'Shipped', 'delivered' => 'Delivered', 'cancelled' => 'Cancelled', 'refunded' => 'Refunded',
+    ];
+
+    /**
+     * Statuses admin may set without contradicting the payment:
+     * an unpaid card order can only stay pending or be cancelled; COD moves through fulfilment
+     * (cash is collected on delivery); anything already paid can go anywhere.
+     */
+    public function allowedStatuses(): array
+    {
+        $keys = match (true) {
+            $this->payment_status === 'paid' => array_keys(self::STATUS_LABELS),
+            $this->payment_method === 'cod' => ['processing', 'shipped', 'delivered', 'cancelled'],
+            default => ['pending', 'cancelled'],
+        };
+        $keys[] = $this->getOriginal('status') ?? $this->status; // never hide the order's current value
+
+        return array_intersect_key(self::STATUS_LABELS, array_flip($keys));
+    }
+
+    /** Status as shown in admin lists, e.g. an unpaid card checkout reads "Awaiting payment". */
+    public function statusLabel(): string
+    {
+        return $this->status === 'pending' && $this->payment_status !== 'paid' ? 'Awaiting payment' : (self::STATUS_LABELS[$this->status] ?? ucfirst($this->status));
+    }
+
+    public function paymentStatusLabel(): string
+    {
+        return $this->payment_method === 'cod' && $this->payment_status === 'pending' && ! in_array($this->status, ['cancelled', 'refunded'], true)
+            ? 'Due on delivery' : ucfirst($this->payment_status);
+    }
+
     public function statusColor(): string
     {
         return match ($this->status) {
