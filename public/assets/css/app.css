@@ -463,3 +463,13 @@ img.author-monogram { object-fit: cover; padding: 0; }
 
 /* "View all books" link at the foot of the Categories menu */
 .categories-all { display: inline-flex; align-items: center; gap: .35rem; margin: .5rem 1rem .25rem; font-weight: 600; font-size: .9rem; }
+
+/* Timed offer popup (Admin → Storefront → Offer Popup) */
+.offer-popup { border: 0; border-radius: 18px; overflow: hidden; position: relative; }
+.offer-popup-close { position: absolute; top: .75rem; right: .75rem; z-index: 2; background-color: #fff; border-radius: 50%; padding: .55rem; opacity: .9; }
+.offer-popup-img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+.offer-popup-body { padding: 1.75rem 1.75rem 1.5rem; text-align: center; }
+.offer-popup-title { font-family: var(--rc-font-display); font-size: 1.9rem; font-weight: 700; color: var(--rc-burgundy); margin-bottom: .5rem; }
+.offer-popup-text { color: var(--rc-ink-soft); font-weight: 500; margin-bottom: 1.1rem; }
+.offer-popup-code { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-bottom: 1.1rem; padding: .6rem .75rem; border: 2px dashed var(--rc-burgundy); border-radius: 12px; background: var(--rc-cream); }
+.offer-popup-code span { font-weight: 800; font-size: 1.2rem; letter-spacing: .08em; color: var(--rc-burgundy); }

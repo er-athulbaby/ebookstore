@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\TopBooks::class, \App\Filament\Widgets\LatestOrders::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->pages([\Filament\Pages\Dashboard::class, \App\Filament\Pages\SiteSettings::class, \App\Filament\Pages\ShippingSettings::class])
+            ->pages([\Filament\Pages\Dashboard::class, \App\Filament\Pages\SiteSettings::class, \App\Filament\Pages\OfferPopup::class, \App\Filament\Pages\ShippingSettings::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
