@@ -4,8 +4,10 @@
    the logo red for large surfaces where the full cherry would be too loud. */
 :root {
   --rc-cherry: #ed1c24;
-  --rc-burgundy: #8c1c2b;
-  --rc-burgundy-dark: #6b1420;
+  /* Brand accent = the logo red. Token names kept as "burgundy" so every rule follows automatically. */
+  --rc-burgundy: #ed1c24;
+  --rc-burgundy-dark: #b8121a;
+  --rc-red-text: #c8161d; /* same red, deep enough for small text on cream (WCAG AA) */
   --rc-ink: #231f20;
   --rc-ink-soft: #3d3738;
   --rc-muted: #4f4945; /* darker than before so small grey text reads clearly */
@@ -27,13 +29,13 @@
 
   /* Point Bootstrap's own hooks at the brand so untouched components don't leak blue. */
   --bs-primary: var(--rc-burgundy);
-  --bs-primary-rgb: 140, 28, 43;
+  --bs-primary-rgb: 237, 28, 36;
   --bs-body-font-family: var(--rc-font-body);
   --bs-body-color: var(--rc-ink);
   --bs-body-bg: var(--rc-ivory);
   --bs-border-color: var(--rc-line);
-  --bs-link-color: var(--rc-burgundy);
-  --bs-link-color-rgb: 140, 28, 43;
+  --bs-link-color: var(--rc-red-text);
+  --bs-link-color-rgb: 200, 22, 29;
   --bs-link-hover-color: var(--rc-cherry);
   --bs-link-hover-color-rgb: 237, 28, 36;
   --bs-secondary-color: var(--rc-muted);
@@ -64,7 +66,7 @@ h1, h2, h3, h4, h5, h6, .section-title, .stat-num {
 h5, .h5, h6, .h6 { font-family: var(--rc-font-body); font-weight: 700; letter-spacing: 0; color: var(--rc-ink); }
 h6, .h6 { font-size: 1.05rem; margin-bottom: .75rem; }
 p { text-wrap: pretty; }
-a { color: var(--rc-burgundy); text-decoration: none; transition: color .2s var(--rc-ease); }
+a { color: var(--rc-red-text); text-decoration: none; transition: color .2s var(--rc-ease); }
 a:hover { color: var(--rc-cherry); }
 ::selection { background: var(--rc-burgundy); color: var(--rc-ivory); }
 :focus-visible { outline: 2px solid var(--rc-cherry); outline-offset: 2px; }
@@ -81,13 +83,13 @@ a:hover { color: var(--rc-cherry); }
   --bs-pagination-color: var(--rc-ink); --bs-pagination-bg: var(--rc-white); --bs-pagination-border-color: var(--rc-line);
   --bs-pagination-hover-color: var(--rc-burgundy); --bs-pagination-hover-bg: var(--rc-cream); --bs-pagination-hover-border-color: var(--rc-line);
   --bs-pagination-active-bg: var(--rc-burgundy); --bs-pagination-active-border-color: var(--rc-burgundy);
-  --bs-pagination-focus-box-shadow: 0 0 0 .2rem rgba(140, 28, 43, .15);
+  --bs-pagination-focus-box-shadow: 0 0 0 .2rem rgba(237, 28, 36, .15);
 }
 .form-control, .form-select { border-color: var(--rc-line); border-radius: var(--rc-radius-sm); background-color: var(--rc-white); }
-.form-control:focus, .form-select:focus { border-color: var(--rc-burgundy); box-shadow: 0 0 0 .2rem rgba(140, 28, 43, .12); }
+.form-control:focus, .form-select:focus { border-color: var(--rc-burgundy); box-shadow: 0 0 0 .2rem rgba(237, 28, 36, .12); }
 .form-label { font-weight: 600; font-size: .9rem; }
 .form-check-input:checked { background-color: var(--rc-burgundy); border-color: var(--rc-burgundy); }
-.form-check-input:focus { border-color: var(--rc-burgundy); box-shadow: 0 0 0 .2rem rgba(140, 28, 43, .12); }
+.form-check-input:focus { border-color: var(--rc-burgundy); box-shadow: 0 0 0 .2rem rgba(237, 28, 36, .12); }
 .card { border-color: var(--rc-line); border-radius: var(--rc-radius); background: var(--rc-white); }
 .card-header { background: var(--rc-cream); border-color: var(--rc-line); }
 .table { --bs-table-bg: transparent; --bs-table-border-color: var(--rc-line); }
@@ -116,7 +118,7 @@ a:hover { color: var(--rc-cherry); }
 .bg-brand { background: var(--rc-cherry) !important; }
 .bg-brand-soft { background: var(--rc-cream) !important; }
 
-.link-arrow { font-weight: 600; font-size: .92rem; color: var(--rc-burgundy); white-space: nowrap; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: .3em; transition: color .2s var(--rc-ease), text-decoration-color .2s var(--rc-ease); }
+.link-arrow { font-weight: 600; font-size: .92rem; color: var(--rc-red-text); white-space: nowrap; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: .3em; transition: color .2s var(--rc-ease), text-decoration-color .2s var(--rc-ease); }
 .link-arrow:hover { color: var(--rc-burgundy-dark); text-decoration-color: currentColor; }
 
 /* ---------- Announcement bar + header ---------- */
@@ -130,7 +132,7 @@ a:hover { color: var(--rc-cherry); }
   background: var(--rc-white); border: 1px solid var(--rc-line); border-radius: 999px;
   padding: 0 .35rem 0 1.15rem; height: 50px; transition: border-color .2s var(--rc-ease), box-shadow .2s var(--rc-ease);
 }
-.search-field:focus-within { border-color: var(--rc-burgundy); box-shadow: 0 0 0 4px rgba(140, 28, 43, .08); }
+.search-field:focus-within { border-color: var(--rc-burgundy); box-shadow: 0 0 0 4px rgba(237, 28, 36, .08); }
 .search-field > i { color: var(--rc-muted); font-size: 1.05rem; }
 .search-field input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: .95rem; color: var(--rc-ink); }
 .search-field input:focus-visible { outline: none; }
@@ -214,7 +216,7 @@ a:hover { color: var(--rc-cherry); }
   font-size: 1.05rem; font-weight: 500;
 }
 .section-title { font-size: clamp(1.9rem, 3.2vw, 2.6rem); margin: .35rem 0 0; }
-.section-sub { color: var(--rc-burgundy); font-weight: 600; margin: .35rem 0 0; max-width: 48ch; }
+.section-sub { color: var(--rc-red-text); font-weight: 600; margin: .35rem 0 0; max-width: 48ch; }
 
 /* ---------- Hero ---------- */
 .hero {

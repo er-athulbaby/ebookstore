@@ -7,8 +7,8 @@
   --rc-ivory: #fbf8f3;
   --rc-cream: #f4eee4;
   --rc-line: #e9dfd1;
-  --rc-burgundy: #8c1c2b;
-  --rc-burgundy-soft: #f6e9ea;
+  --rc-burgundy: #c8161d; /* logo red, deep enough for white text */
+  --rc-burgundy-soft: #fdeaea;
   --rc-ink: #231f20;
   --rc-muted: #5f5753;
   --rc-radius: 14px;
@@ -69,7 +69,7 @@
 /* Login */
 .fi-simple-layout {
   background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(140, 28, 43, .10), transparent 60%),
+    radial-gradient(60rem 30rem at 85% -10%, rgba(237, 28, 36, .10), transparent 60%),
     radial-gradient(40rem 24rem at -10% 110%, rgba(6, 104, 57, .07), transparent 60%),
     var(--rc-cream);
 }

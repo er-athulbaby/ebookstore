@@ -28,8 +28,8 @@ class SalesChart extends ChartWidget
             'datasets' => [[
                 'label' => 'Sales (₹)',
                 'data' => array_map(fn ($paise) => $paise / 100, array_values($daily)),
-                'borderColor' => '#8c1c2b',
-                'backgroundColor' => 'rgba(140, 28, 43, 0.08)',
+                'borderColor' => '#ed1c24',
+                'backgroundColor' => 'rgba(237, 28, 36, 0.08)',
                 'fill' => true,
                 'tension' => 0.3,
                 'pointRadius' => 2,

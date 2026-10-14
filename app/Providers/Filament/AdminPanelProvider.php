@@ -29,11 +29,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             // Visual only: brand palette, fonts and grouped navigation; see public/assets/css/admin.css.
             ->colors([
-                // Explicit burgundy scale (logo #8C1C2B at 600): the auto-generated one made 600 too light,
-                // so Filament fell back to pink buttons with dark text.
+                // Explicit red scale built on the logo red (#ED1C24 at 500). 600 is deepened so white button
+                // text passes contrast; otherwise Filament falls back to pink buttons with dark text.
                 'primary' => array_map(fn ($hex) => Color::convertToOklch($hex), [
-                    50 => '#fbf1f2', 100 => '#f6e2e4', 200 => '#edc5ca', 300 => '#df9aa3', 400 => '#c9606e',
-                    500 => '#ab3445', 600 => '#8c1c2b', 700 => '#741723', 800 => '#5c1220', 900 => '#4a101b', 950 => '#2b080e',
+                    50 => '#fef2f2', 100 => '#fde3e4', 200 => '#fbc7c9', 300 => '#f69a9e', 400 => '#f15a60',
+                    500 => '#ed1c24', 600 => '#c8161d', 700 => '#a51218', 800 => '#861016', 900 => '#6e0f14', 950 => '#3c0609',
                 ]),
                 'gray' => Color::Stone,             // warm neutrals to match the storefront paper tones
                 'success' => Color::hex('#066839'),
