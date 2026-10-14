@@ -396,13 +396,13 @@ a:hover { color: var(--rc-cherry); }
 @media (min-width: 576px) { .footer-top { grid-template-columns: repeat(3, 1fr); } .footer-brand { grid-column: 1 / -1; } }
 @media (min-width: 992px) { .footer-top { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; } .footer-brand { grid-column: auto; } }
 .footer-brand img { height: 72px; width: auto; }
-.footer-brand p { margin: .75rem 0 0; max-width: 36ch; font-size: .9rem; color: var(--rc-muted); }
+.footer-brand p { margin: .75rem 0 0; max-width: 36ch; font-size: .9rem; color: var(--rc-ink); font-weight: 500; }
 .footer-col { display: flex; flex-direction: column; gap: .15rem; }
 .footer-col h6 { font-family: var(--rc-font-body); font-size: 1.05rem; font-weight: 800; color: var(--rc-burgundy); margin-bottom: .6rem; }
 .footer-col a, .footer-col span { color: var(--rc-ink); font-weight: 700; font-size: .92rem; padding: .25rem 0; overflow-wrap: anywhere; }
 .footer-col a:hover { color: var(--rc-burgundy); }
 .footer-col i { color: var(--rc-muted); margin-right: .35rem; }
-.footer-bottom { border-top: 1px solid var(--rc-line); padding: 1.1rem 0 1.5rem; font-size: .82rem; color: var(--rc-muted); }
+.footer-bottom { border-top: 1px solid var(--rc-line); padding: 1.1rem 0 1.5rem; font-size: .85rem; color: var(--rc-ink); font-weight: 500; }
 
 /* ---------- Other storefront pages ---------- */
 .filter-block { border-bottom: 1px solid var(--rc-line); padding-bottom: 1rem; margin-bottom: 1rem; }
