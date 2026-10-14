@@ -10,6 +10,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(\App\Services\CartService::class);
+
+        // Livewire file uploads in a subfolder install (/demo): see App\Support\SubfolderSignedUploadUrl.
+        $this->app->bind(
+            \Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl::class,
+            \App\Support\SubfolderSignedUploadUrl::class,
+        );
     }
 
     public function boot(): void
