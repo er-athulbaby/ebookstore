@@ -480,3 +480,11 @@ img.author-monogram { object-fit: cover; padding: 0; }
 .offer-popup-text { color: var(--rc-ink-soft); font-weight: 500; margin-bottom: 1.1rem; }
 .offer-popup-code { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-bottom: 1.1rem; padding: .6rem .75rem; border: 2px dashed var(--rc-burgundy); border-radius: 12px; background: var(--rc-cream); }
 .offer-popup-code span { font-weight: 800; font-size: 1.2rem; letter-spacing: .08em; color: var(--rc-burgundy); }
+
+/* Book page image gallery (thumbnails under the main cover) */
+.gallery-thumbs { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+.gallery-thumb { width: 64px; aspect-ratio: 2 / 3; padding: 0; border: 2px solid transparent; border-radius: 6px; overflow: hidden; background: var(--rc-cream); cursor: pointer; transition: border-color .15s var(--rc-ease); }
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; box-shadow: none; border-radius: 0; }
+.gallery-thumb:hover { border-color: var(--rc-line); }
+.gallery-thumb.active { border-color: var(--rc-burgundy); }
+.gallery-thumb:focus-visible { outline: 2px solid var(--rc-burgundy); outline-offset: 2px; }

@@ -15,7 +15,19 @@
     <div class="row g-4">
         <div class="col-md-4">
             <div class="book-gallery">
-                <img src="{{ $book->coverUrl() }}" alt="{{ $book->title }}">
+                <img src="{{ $book->coverUrl() }}" alt="{{ $book->images->first()?->alt_text ?: $book->title }}" data-gallery-main>
+                @if($book->images->count() > 1)
+                    {{-- Extra images from admin (Book → Cover images); click a thumbnail to show it large --}}
+                    <div class="gallery-thumbs" role="group" aria-label="Book images">
+                        @foreach($book->images as $image)
+                            <button type="button" class="gallery-thumb @if($loop->first) active @endif" aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
+                                    data-src="{{ asset('storage/'.$image->path) }}" data-alt="{{ $image->alt_text ?: $book->title }}"
+                                    aria-label="Show image {{ $loop->iteration }} of {{ $loop->count }}">
+                                <img src="{{ asset('storage/'.$image->path) }}" alt="" loading="lazy">
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -189,3 +201,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.querySelectorAll('.gallery-thumb').forEach(function (thumb) {
+    thumb.addEventListener('click', function () {
+        var main = document.querySelector('[data-gallery-main]');
+        main.src = thumb.dataset.src;
+        main.alt = thumb.dataset.alt;
+        document.querySelectorAll('.gallery-thumb').forEach(function (t) {
+            t.classList.toggle('active', t === thumb);
+            t.setAttribute('aria-pressed', t === thumb ? 'true' : 'false');
+        });
+    });
+});
+</script>
+@endpush
