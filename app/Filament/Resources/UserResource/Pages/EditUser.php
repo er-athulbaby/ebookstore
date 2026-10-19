@@ -14,4 +14,10 @@ class EditUser extends EditRecord
     {
         return [DeleteAction::make()];
     }
+
+    /** "Full access" is stored as no section list (the checkbox list is hidden, so it isn't saved on its own). */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return UserResource::applyFullAccess($data, $this->data);
+    }
 }

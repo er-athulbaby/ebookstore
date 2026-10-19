@@ -9,6 +9,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SalesOverview extends StatsOverviewWidget
 {
+    public static function canView(): bool
+    {
+        return (bool) auth()->user()?->canAccessSection('dashboard');
+    }
+
     protected static ?int $sort = 1;
 
     protected static bool $isLazy = false; // one request per dashboard load, not one per widget

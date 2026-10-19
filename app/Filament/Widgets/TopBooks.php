@@ -10,6 +10,11 @@ use Filament\Widgets\TableWidget;
 
 class TopBooks extends TableWidget
 {
+    public static function canView(): bool
+    {
+        return (bool) auth()->user()?->canAccessSection('dashboard');
+    }
+
     protected static ?int $sort = 3;
 
     protected static bool $isLazy = false; // small query; render with the page

@@ -8,6 +8,11 @@ use Filament\Widgets\ChartWidget;
 
 class SalesChart extends ChartWidget
 {
+    public static function canView(): bool
+    {
+        return (bool) auth()->user()?->canAccessSection('dashboard');
+    }
+
     protected static ?int $sort = 2;
 
     protected static bool $isLazy = false; // one request per dashboard load, not one per widget

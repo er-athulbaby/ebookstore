@@ -21,6 +21,10 @@ use Illuminate\Support\Str;
 
 class BundleResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'bundles';
+
     protected static ?string $model = Bundle::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cube';

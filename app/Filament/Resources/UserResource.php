@@ -4,6 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Support\AdminSections;
 use BackedEnum;
 use UnitEnum;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +20,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'users';
+
     protected static ?string $model = User::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
@@ -24,6 +31,26 @@ class UserResource extends Resource
     protected static ?int $navigationSort = 9;
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';
+
+    /** Only full admins may change admin accounts; otherwise a limited admin could reset a full admin's password. */
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return ! $record->is_admin || auth()->user()->isSuperAdmin() || $record->is(auth()->user());
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return static::canEdit($record) && ! $record->is(auth()->user());
+    }
+
+    public static function applyFullAccess(array $data, array $formState): array
+    {
+        if (auth()->user()->isSuperAdmin() && ($formState['is_admin'] ?? false) && ($formState['full_access'] ?? false)) {
+            $data['admin_permissions'] = null;
+        }
+
+        return $data;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -43,7 +70,22 @@ class UserResource extends Resource
                 ->dehydrated(fn ($state) => filled($state))
                 ->required(fn (string $context) => $context === 'create')
                 ->helperText('Leave blank to keep the current password.'),
-            Toggle::make('is_admin')->label('Admin access (can log into this panel)'),
+            Toggle::make('is_admin')->label('Admin access (can log into this panel)')->live()
+                ->disabled(fn (?User $record) => ! auth()->user()->isSuperAdmin() || $record?->is(auth()->user())),
+            Toggle::make('full_access')->label('Full access (all sections, can manage admins)')
+                ->visible(fn (Get $get) => $get('is_admin'))
+                ->disabled(fn (?User $record) => ! auth()->user()->isSuperAdmin() || $record?->is(auth()->user()))
+                ->afterStateHydrated(fn (Toggle $component, ?User $record) => $component->state($record ? $record->admin_permissions === null : true))
+                ->dehydrated(false)
+                ->live(),
+            CheckboxList::make('admin_permissions')->label('Sections this admin can open')
+                ->options(AdminSections::ALL)
+                ->columns(2)->columnSpanFull()
+                ->visible(fn (Get $get) => $get('is_admin') && ! $get('full_access'))
+                ->disabled(fn () => ! auth()->user()->isSuperAdmin())
+                // Full access is stored as "no list"; a limited admin gets exactly the ticked sections.
+                ->dehydrateStateUsing(fn ($state, Get $get) => $get('full_access') ? null : array_values($state ?? []))
+                ->dehydrated(fn () => auth()->user()->isSuperAdmin()),
         ]);
     }
 

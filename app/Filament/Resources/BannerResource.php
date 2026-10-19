@@ -18,6 +18,10 @@ use Filament\Tables\Table;
 
 class BannerResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'banners';
+
     protected static ?string $model = Banner::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-photo';

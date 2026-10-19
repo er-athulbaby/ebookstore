@@ -19,6 +19,10 @@ use Filament\Tables\Table;
 
 class GiftVoucherResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'gift_cards';
+
     protected static ?string $model = GiftVoucher::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-gift';

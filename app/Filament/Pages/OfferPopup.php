@@ -23,6 +23,10 @@ use UnitEnum;
 /** Timed offer popup on the storefront (rendered by resources/views/partials/offer-popup.blade.php). */
 class OfferPopup extends Page
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'offer_popup';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 
     protected static ?string $navigationLabel = 'Offer Popup';

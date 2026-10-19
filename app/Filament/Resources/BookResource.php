@@ -25,6 +25,10 @@ use Illuminate\Support\Str;
 
 class BookResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'books';
+
     protected static ?string $model = Book::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';

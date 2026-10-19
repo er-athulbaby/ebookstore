@@ -18,6 +18,10 @@ use Filament\Tables\Table;
 
 class CouponResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'coupons';
+
     protected static ?string $model = Coupon::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-ticket';

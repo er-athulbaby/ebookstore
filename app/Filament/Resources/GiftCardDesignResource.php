@@ -19,6 +19,10 @@ use Filament\Tables\Table;
 /** Gift cards customers can buy on /gift-cards (e.g. "Happy Onam ₹500"). */
 class GiftCardDesignResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'gift_cards';
+
     protected static ?string $model = GiftCardDesign::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';

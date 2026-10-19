@@ -19,6 +19,10 @@ use Filament\Schemas\Schema;
 /** Admin-editable delivery charges; read everywhere through App\Support\Shipping. */
 class ShippingSettings extends Page
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'shipping';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-truck';
 
     protected static ?string $navigationLabel = 'Shipping';

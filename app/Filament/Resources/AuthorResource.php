@@ -21,6 +21,10 @@ use Illuminate\Support\Str;
 
 class AuthorResource extends Resource
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'authors';
+
     protected static ?string $model = Author::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';

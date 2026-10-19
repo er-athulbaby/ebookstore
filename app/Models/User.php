@@ -21,6 +21,7 @@ class User extends Authenticatable implements FilamentUser
         'phone',
         'password',
         'is_admin',
+        'admin_permissions',
         'wallet_balance',
     ];
 
@@ -35,12 +36,25 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'admin_permissions' => 'array',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->is_admin;
+    }
+
+    /** Full admin: no section list set. Only full admins can change who gets admin access. */
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_admin && $this->admin_permissions === null;
+    }
+
+    /** Section keys are listed in App\Support\AdminSections. */
+    public function canAccessSection(string $section): bool
+    {
+        return $this->is_admin && ($this->admin_permissions === null || in_array($section, $this->admin_permissions, true));
     }
 
     public function addresses(): HasMany

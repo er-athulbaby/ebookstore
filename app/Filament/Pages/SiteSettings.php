@@ -24,6 +24,10 @@ use UnitEnum;
 
 class SiteSettings extends Page
 {
+    use \App\Filament\Concerns\RequiresAdminSection;
+
+    protected static string $adminSection = 'site_settings';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     protected static ?string $navigationLabel = 'Site Settings';
